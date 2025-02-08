@@ -1,11 +1,18 @@
+using Microsoft.EntityFrameworkCore;
+using QuoteCalculator.Context;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Connection Strings:
+string? defaultConnectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
 
+// Add services to the container.
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// DBContext:
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(defaultConnectionString));
 
 var app = builder.Build();
 
