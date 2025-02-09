@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using QuoteCalculator.Context;
+using QuoteCalculator.Services.BorrowersService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,9 @@ builder.Services.AddSwaggerGen();
 
 // DBContext:
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(defaultConnectionString));
+
+// Interface & Repository:
+builder.Services.AddScoped<IBorrowers, Borrowers>();
 
 var app = builder.Build();
 
