@@ -1,8 +1,8 @@
 ﻿using QuoteCalculator.Domain.Models;
 
-namespace QuoteCalculator.Services.BorrowersService
+namespace QuoteCalculator.Services.BorrowerService
 {
-    public interface IBorrowers
+    public interface IBorrower
     {
         Task<BorrowerModel> AddBorrower(BorrowerModel borrower);
         Task<BorrowerModel> UpdateBorrower(BorrowerModel borrower);

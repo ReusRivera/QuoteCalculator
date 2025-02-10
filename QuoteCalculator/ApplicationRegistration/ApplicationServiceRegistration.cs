@@ -1,20 +1,28 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-//using QuoteCalculator.Services.QuotationService;
+﻿using QuoteCalculator.Services.BorrowerService;
+using QuoteCalculator.Services.EmailService;
+using QuoteCalculator.Services.LoanApplicationService;
+using QuoteCalculator.Services.QuotationService;
 
-namespace QuoteCalculator.Infrastructure
+namespace QuoteCalculator.ApplicationRegistration
 {
     public static class ApplicationServiceRegistration
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            //services.AddScoped<IBorrowers, Borrowers>();
-            //services.AddScoped<ILoanApplication, LoanApplication>();
-            //services.AddScoped<IQuotation, Quotation>();
+            services.AddScoped<IBorrower, Borrower>();
+            services.AddScoped<IEmail, Email>();
+            services.AddScoped<ILoanApplication, LoanApplication>();
+            services.AddScoped<IQuotation, Quotation>();
 
             return services;
         }
+
+        //public static IServiceCollection AddApplicationServices2(this IServiceCollection services)
+        //{
+        //    services.AddAutoMapper(typeof(MappingProfile)); ;
+
+        //    return services;
+        //}
 
         //public static IServiceCollection AddJwtBearer(this IServiceCollection services, IConfiguration configuration)
         //{

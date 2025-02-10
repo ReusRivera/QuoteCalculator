@@ -1,3 +1,4 @@
+using QuoteCalculator.ApplicationRegistration;
 using QuoteCalculator.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Others:
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+// Custom:
 builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceServices(configuration);
 
