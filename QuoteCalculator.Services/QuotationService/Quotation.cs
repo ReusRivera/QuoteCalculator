@@ -1,4 +1,4 @@
-﻿using QuoteCalculator.Infrastracture.Context;
+﻿using QuoteCalculator.Infrastructure.Data;
 
 namespace QuoteCalculator.Services.QuotationService
 {
@@ -9,6 +9,16 @@ namespace QuoteCalculator.Services.QuotationService
         public Quotation(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public async Task CalculateQuote()
+        {
+
+        }
+
+        public async Task ApplyLoan()
+        {
+
         }
     }
 }

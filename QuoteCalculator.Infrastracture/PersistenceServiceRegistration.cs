@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using QuoteCalculator.Infrastructure.Context;
+using QuoteCalculator.Infrastructure.Data;
 
 namespace QuoteCalculator.Infrastructure
 {

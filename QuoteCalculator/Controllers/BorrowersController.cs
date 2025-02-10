@@ -9,12 +9,10 @@ namespace QuoteCalculator.Controllers
     [ApiController]
     public class BorrowersController : ControllerBase
     {
-        //private readonly ApplicationDbContext _context;
         private readonly IBorrowers _borrowers;
 
-        public BorrowersController(/*ApplicationDbContext context*/ IBorrowers borrowers)
+        public BorrowersController(IBorrowers borrowers)
         {
-            //_context = context;
             _borrowers = borrowers;
         }
 
@@ -23,7 +21,7 @@ namespace QuoteCalculator.Controllers
         {
             try
             {
-                var allBorrowers = await _borrowers.GetAllBorrowersList();
+                var allBorrowers = await _borrowers.GetBorrowersList();
 
                 return Ok(allBorrowers);
             }
@@ -38,7 +36,7 @@ namespace QuoteCalculator.Controllers
         {
             try
             {
-                var allBorrowers = await _borrowers.GetAllBorrowersList();
+                var allBorrowers = await _borrowers.GetBorrowersList();
 
                 return Ok(allBorrowers);
             }
@@ -53,7 +51,7 @@ namespace QuoteCalculator.Controllers
         {
             try
             {
-                var allBorrowers = await _borrowers.GetAllBorrowersList();
+                var allBorrowers = await _borrowers.GetBorrowersList();
 
                 return Ok(allBorrowers);
             }
@@ -62,5 +60,15 @@ namespace QuoteCalculator.Controllers
                 return BadRequest($"Error: {ex.Message}");
             }
         }
+
+        //public HttpResponseMessage Post()
+        //{
+        //    // ... do the job
+
+        //    // now redirect
+        //    var response = Request.CreateResponse(HttpStatusCode.Moved);
+        //    response.Headers.Location = new Uri("http://www.abcmvc.com");
+        //    return response;
+        //}
     }
 }

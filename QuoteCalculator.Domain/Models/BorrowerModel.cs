@@ -2,12 +2,16 @@
 {
     public class BorrowerModel
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = new Guid();
         public required string Title { get; set; }
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public DateOnly DateOfBirth { get; set; }
         public required string Mobile { get; set; }
         public required string Email { get; set; }
+
+        public DateTime DateCreated { get; set; } = DateTime.UtcNow;
+        public DateTime DateModified { get; set; }
+        public bool IsActive { get; set; }
     }
 }

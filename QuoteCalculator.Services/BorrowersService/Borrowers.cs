@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QuoteCalculator.Domain.Models;
-using QuoteCalculator.Infrastracture.Context;
+using QuoteCalculator.Infrastructure.Data;
 
 namespace QuoteCalculator.Services.BorrowersService
 {
@@ -13,7 +13,39 @@ namespace QuoteCalculator.Services.BorrowersService
             _context = context;
         }
 
-        public async Task<List<BorrowerModel>> GetAllBorrowersList()
+        public async Task<BorrowerModel> AddBorrower(BorrowerModel borrower)
+        {
+            var result = _context.Borrowers.Add(borrower);
+            await _context.SaveChangesAsync();
+
+            return result.Entity;
+        }
+
+        public async Task<BorrowerModel> UpdateBorrower(BorrowerModel borrower)
+        {
+            var result = _context.Borrowers.Update(borrower);
+            await _context.SaveChangesAsync();
+
+            return result.Entity;
+        }
+
+        public async Task<int> DeleteBorrower(Guid Id)
+        {
+            var filteredData = _context.Borrowers
+                .FirstOrDefault(x => x.Id == Id);
+
+            _context.Borrowers.Remove(filteredData);
+
+            return await _context.SaveChangesAsync();
+        }
+
+        public async Task<BorrowerModel?> GetBorrowerById(Guid Id)
+        {
+            return await _context.Borrowers
+                .FirstOrDefaultAsync(b => b.Id == Id);
+        }
+
+        public async Task<List<BorrowerModel>> GetBorrowersList()
         {
             return await _context.Borrowers
                 .ToListAsync();
