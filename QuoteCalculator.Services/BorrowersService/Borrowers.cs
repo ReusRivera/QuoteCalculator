@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QuoteCalculator.Context;
-using QuoteCalculator.Models;
+using QuoteCalculator.Domain.Models;
+using QuoteCalculator.Infrastracture.Context;
 
 namespace QuoteCalculator.Services.BorrowersService
 {

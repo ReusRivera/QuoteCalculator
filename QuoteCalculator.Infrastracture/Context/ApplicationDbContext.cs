@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QuoteCalculator.Models;
+using QuoteCalculator.Domain.Models;
 
-namespace QuoteCalculator.Context
+namespace QuoteCalculator.Infrastructure.Context
 {
     public class ApplicationDbContext : DbContext
     {

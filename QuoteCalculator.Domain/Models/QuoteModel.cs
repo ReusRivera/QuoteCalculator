@@ -1,4 +1,4 @@
-﻿namespace QuoteCalculator.Models
+﻿namespace QuoteCalculator.Domain.Models
 {
     public class QuoteModel
     {

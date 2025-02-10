@@ -1,4 +1,4 @@
-﻿using QuoteCalculator.Models;
+﻿using QuoteCalculator.Domain.Models;
 
 namespace QuoteCalculator.Services.BorrowersService
 {

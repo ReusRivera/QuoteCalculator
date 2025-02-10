@@ -17,7 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Entities\" />
+    <ProjectReference Include="..\QuoteCalculator.Domain\QuoteCalculator.Domain.csproj" />
+    <ProjectReference Include="..\QuoteCalculator.Infrastracture\QuoteCalculator.Infrastructure.csproj" />
+    <ProjectReference Include="..\QuoteCalculator.Services\QuoteCalculator.Services.csproj" />
   </ItemGroup>
 
 </Project>

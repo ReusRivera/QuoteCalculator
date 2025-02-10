@@ -1,9 +1,8 @@
-﻿namespace QuoteCalculator.Models.Dto
+﻿namespace QuoteCalculator.Domain.Models
 {
-    public class QuotationDto
+    public class BorrowerModel
     {
-        public int AmountRequired { get; set; }
-        public int Term { get; set; }
+        public Guid Id { get; set; }
         public required string Title { get; set; }
         public required string FirstName { get; set; }
         public required string LastName { get; set; }

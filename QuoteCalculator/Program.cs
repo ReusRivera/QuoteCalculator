@@ -1,22 +1,16 @@
-using Microsoft.EntityFrameworkCore;
-using QuoteCalculator.Context;
-using QuoteCalculator.Services.BorrowersService;
+using QuoteCalculator.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Connection Strings:
-string? defaultConnectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
+ConfigurationManager configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// DBContext:
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(defaultConnectionString));
-
-// Interface & Repository:
-builder.Services.AddScoped<IBorrowers, Borrowers>();
+// Others:
+builder.Services.AddPersistenceServices(configuration);
 
 var app = builder.Build();
 
@@ -26,6 +20,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//app.UseCors(options =>
+//{
+//    var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+
+//    options.SetIsOriginAllowed(origin => allowedOrigins.Contains(origin))
+//       .AllowAnyHeader()
+//       .AllowAnyMethod()
+//       .AllowCredentials();
+
+//    //opt.WithOrigins("https://localhost:5001").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+//});
 
 app.UseHttpsRedirection();
 
