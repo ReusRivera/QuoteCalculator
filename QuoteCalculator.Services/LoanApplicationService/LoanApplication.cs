@@ -16,7 +16,7 @@ namespace QuoteCalculator.Services.LoanApplicationService
             _email = email;
         }
 
-        private async Task<bool> IsApplicantEligible(QuotationDto quotation)
+        public async Task<bool> IsApplicantEligible(QuotationDto quotation)
         {
             if (IsApplicantOfLegalAge(quotation.DateOfBirth))
                 return false;

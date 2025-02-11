@@ -12,18 +12,18 @@ namespace QuoteCalculator.Controllers
             
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CalculateQuote([FromBody] QuotationDto model)
-        {
-            if (model == null)
-                return BadRequest("Invalid quotation data.");
+        //[HttpPost]
+        //public async Task<IActionResult> CalculateQuote([FromBody] QuotationDto model)
+        //{
+        //    if (model == null)
+        //        return BadRequest("Invalid quotation data.");
 
-            var quotation = await _quotation.CreateQuotation(model);
+        //    var quotation = await _quotation.CreateQuotation(model);
 
-            if (quotation == null)
-                return StatusCode(500, "An error occurred while processing the request.");
+        //    if (quotation == null)
+        //        return StatusCode(500, "An error occurred while processing the request.");
 
-            return Ok(quotation);
-        }
+        //    return Ok(quotation);
+        //}
     }
 }
