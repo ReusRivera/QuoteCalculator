@@ -13,7 +13,7 @@ namespace QuoteCalculator.Services.BorrowerService
             _context = context;
         }
 
-        public async Task<BorrowerModel> AddBorrower(BorrowerModel borrower)
+        private async Task<BorrowerModel> AddBorrower(BorrowerModel borrower)
         {
             var result = _context.Borrower.Add(borrower);
             await _context.SaveChangesAsync();
@@ -21,7 +21,7 @@ namespace QuoteCalculator.Services.BorrowerService
             return result.Entity;
         }
 
-        public async Task<BorrowerModel> UpdateBorrower(BorrowerModel borrower)
+        private async Task<BorrowerModel> UpdateBorrower(BorrowerModel borrower)
         {
             var result = _context.Borrower.Update(borrower);
             await _context.SaveChangesAsync();
@@ -29,26 +29,37 @@ namespace QuoteCalculator.Services.BorrowerService
             return result.Entity;
         }
 
-        public async Task<int> DeleteBorrower(Guid Id)
+        //private async Task<BorrowerModel> UpdateBorrowerDeails(BorrowerModel existing, BorrowerModel updated)
+        //{
+        //    existing.DateModified = DateTime.UtcNow;
+
+        //    return await UpdateBorrower(borrower);
+        //}
+
+        private async Task<BorrowerModel> UpdateBorrowerDeails(BorrowerModel borrower)
         {
-            var filteredData = _context.Borrower
-                .FirstOrDefault(x => x.Id == Id);
+            borrower.DateModified = DateTime.UtcNow;
 
-            _context.Borrower.Remove(filteredData);
-
-            return await _context.SaveChangesAsync();
+            return await UpdateBorrower(borrower);
         }
 
-        public async Task<BorrowerModel?> GetBorrowerById(Guid Id)
+        private async Task<BorrowerModel?> GetExistingBorrowerByDetails(BorrowerModel borrower)
         {
             return await _context.Borrower
-                .FirstOrDefaultAsync(b => b.Id == Id);
+                .FirstOrDefaultAsync(b =>
+                    b.FirstName != null && b.FirstName.Equals(borrower.FirstName, StringComparison.OrdinalIgnoreCase) &&
+                    b.LastName != null && b.LastName.Equals(borrower.LastName, StringComparison.OrdinalIgnoreCase) &&
+                    b.DateOfBirth == borrower.DateOfBirth);
         }
 
-        public async Task<List<BorrowerModel>> GetBorrowersList()
+        public async Task<BorrowerModel> ValidateNewBorrower(BorrowerModel borrower)
         {
-            return await _context.Borrower
-                .ToListAsync();
+            var existingBorrower = await GetExistingBorrowerByDetails(borrower);
+
+            if (existingBorrower == null)
+                return await AddBorrower(borrower);
+
+            return await UpdateBorrowerDeails(borrower);
         }
     }
 }

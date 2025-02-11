@@ -1,9 +1,10 @@
 ﻿using QuoteCalculator.Domain.Models;
+using QuoteCalculator.Domain.Models.Dto;
 
 namespace QuoteCalculator.Services.QuotationService
 {
     public interface IQuotation
     {
-        Task<QuotationModel> AddQuotation(QuotationModel quotation);
+        Task<QuotationModel?> CreateQuotationAsync(QuotationDto model);
     }
 }
