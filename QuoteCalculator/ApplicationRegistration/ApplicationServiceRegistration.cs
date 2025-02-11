@@ -48,7 +48,7 @@ namespace QuoteCalculator.ApplicationRegistration
         //                {
         //                    OnMessageReceived = context =>
         //                    {
-        //                        context.Token = context.Request.Cookies["FrameWorkToken"];
+        //                        context.Token = context.Request.Cookies["Token"];
         //                        return Task.CompletedTask;
         //                    }
         //                };

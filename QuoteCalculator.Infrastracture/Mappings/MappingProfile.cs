@@ -12,7 +12,5 @@ public class MappingProfile : Profile
 
         //CreateMap<QuotationDto, BorrowerModel>()
         //    .ForMember(dest => dest.Summary, opt => opt.MapFrom(src => src.Description));
-
-        CreateMap<BorrowerModel, BorrowerModel>();
     }
 }

@@ -1,27 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuoteCalculator.Domain.Models.Dto;
-using QuoteCalculator.Services.QuotationService;
+using QuoteCalculator.Services.LoanApplicationService;
 
 namespace QuoteCalculator.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class QuotationController : ControllerBase
+    public class LoanApplicationController : ControllerBase
     {
-        private readonly IQuotation _quotation;
+        private readonly ILoanApplication _loanApplication;
 
-        public QuotationController(IQuotation quotation)
+        public LoanApplicationController(ILoanApplication loanApplication)
         {
-            _quotation = quotation;
+            _loanApplication = loanApplication;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateQuote([FromBody] QuotationDto model)
+        public async Task<IActionResult> ApplyLoan([FromBody] QuotationDto model)
         {
             if (model == null)
                 return BadRequest("Invalid quotation data.");
 
-            var quotation = await _quotation.CreateQuotation(model);
+            var quotation = await _loanApplication.CreateQuotation(model);
 
             if (quotation == null)
                 return StatusCode(500, "An error occurred while processing the request.");

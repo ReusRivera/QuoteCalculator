@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using QuoteCalculator.Domain.Models;
 using QuoteCalculator.Domain.Models.Dto;
 using QuoteCalculator.Infrastructure.Data;
 using QuoteCalculator.Services.BorrowerService;
-using QuoteCalculator.Services.EmailService;
 
 namespace QuoteCalculator.Services.QuotationService
 {
@@ -13,14 +11,12 @@ namespace QuoteCalculator.Services.QuotationService
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IBorrower _borrower;
-        private readonly IEmail _email;
 
-        public Quotation(ApplicationDbContext context, IMapper mapper, IBorrower borrower, IEmail email)
+        public Quotation(ApplicationDbContext context, IMapper mapper, IBorrower borrower)
         {
             _context = context;
             _mapper = mapper;
             _borrower = borrower;
-            _email = email;
         }
 
         private async Task<QuotationModel> AddQuotation(QuotationModel quotation)
@@ -31,32 +27,7 @@ namespace QuoteCalculator.Services.QuotationService
             return result.Entity;
         }
 
-        private async Task<bool> IsApplicantEligible(QuotationDto quotation)
-        {
-            if (IsApplicantOfLegalAge(quotation.DateOfBirth))
-                return false;
-
-            if (await IsMobileNumberBlacklisted(quotation.Mobile))
-                return false;
-
-            if (await _email.IsEmailAllowed(quotation.Email))
-                return false;
-
-            return true;
-        }
-
-        private static bool IsApplicantOfLegalAge(DateOnly birthDate)
-        {
-            return DateOnly.FromDateTime(DateTime.Today) >= birthDate.AddYears(18);
-        }
-
-        private async Task<bool> IsMobileNumberBlacklisted(string mobileNumber)
-        {
-            return await _context.MobileNumber
-                .AnyAsync(e => !e.IsAllowed && e.MobileNumber.Equals(mobileNumber, StringComparison.OrdinalIgnoreCase));
-        }
-
-        public async Task<QuotationModel?> CreateQuotationAsync(QuotationDto model)
+        public async Task<QuotationModel?> CreateQuotation(QuotationDto model)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -100,7 +71,7 @@ namespace QuoteCalculator.Services.QuotationService
             }
         }
 
-        public async Task<QuotationModel?> CalculateQuotationAsync(QuotationDto model)
+        public async Task<QuotationModel?> UpdateQuotation(QuotationDto model)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -113,7 +84,7 @@ namespace QuoteCalculator.Services.QuotationService
 
                 if (borrower == null)
                 {
-                    //_logger.LogError("CreateQuotation: Failed to create borrower.");
+                    //_logger.LogError("UpdateQuotation: Failed to create borrower.");
                     await transaction.RollbackAsync();
 
                     return null;
@@ -125,7 +96,7 @@ namespace QuoteCalculator.Services.QuotationService
 
                 if (quotation == null)
                 {
-                    //_logger.LogError("CreateQuotation: Failed to create quotation.");
+                    //_logger.LogError("UpdateQuotation: Failed to create quotation.");
                     await transaction.RollbackAsync();
 
                     return null;
@@ -137,19 +108,55 @@ namespace QuoteCalculator.Services.QuotationService
             }
             catch (Exception ex)
             {
-                //_logger.LogError(ex, "CreateQuotation: An error occurred while creating quotation.");
+                //_logger.LogError(ex, "UpdateQuotation: An error occurred while creating quotation.");
                 await transaction.RollbackAsync();
 
                 return null;
             }
         }
 
-        public async Task<bool> ApplyLoan(QuotationDto quotation)
+        public async Task<QuotationModel?> CalculateQuotation(QuotationDto model)
         {
-            if (!await IsApplicantEligible(quotation))
-                return false;
+            using var transaction = await _context.Database.BeginTransactionAsync();
 
-            return true;
+            try
+            {
+                var quotationMap = _mapper.Map<QuotationModel>(model);
+                var borrowerMap = _mapper.Map<BorrowerModel>(model);
+
+                var borrower = await _borrower.ValidateNewBorrower(borrowerMap);
+
+                if (borrower == null)
+                {
+                    //_logger.LogError("CalculateQuotation: Failed to create borrower.");
+                    await transaction.RollbackAsync();
+
+                    return null;
+                }
+
+                quotationMap.Borrower = borrower;
+
+                var quotation = await AddQuotation(quotationMap);
+
+                if (quotation == null)
+                {
+                    //_logger.LogError("CalculateQuotation: Failed to create quotation.");
+                    await transaction.RollbackAsync();
+
+                    return null;
+                }
+
+                await transaction.CommitAsync();
+
+                return quotation;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex, "CalculateQuotation: An error occurred while creating quotation.");
+                await transaction.RollbackAsync();
+
+                return null;
+            }
         }
     }
 }

@@ -12,6 +12,12 @@ namespace QuoteCalculator.Services.EmailService
             _context = context;
         }
 
+        private async Task<bool> IsEmailDomainBlacklisted(string domain)
+        {
+            return await _context.EmailDomain
+                .AnyAsync(e => !e.IsAllowed && e.DomainName.Equals(domain, StringComparison.OrdinalIgnoreCase));
+        }
+
         public async Task<bool> IsEmailAllowed(string email)
         {
             string? domain = email?.Split('@').LastOrDefault()?.Trim().ToLower();
@@ -20,12 +26,6 @@ namespace QuoteCalculator.Services.EmailService
                 return false;
 
             return !await IsEmailDomainBlacklisted(domain);
-        }
-
-        private async Task<bool> IsEmailDomainBlacklisted(string domain)
-        {
-            return await _context.EmailDomain
-                .AnyAsync(e => !e.IsAllowed && e.DomainName.Equals(domain, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
