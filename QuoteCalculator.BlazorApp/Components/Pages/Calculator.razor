@@ -1,0 +1,60 @@
+﻿@page "/calculator"
+
+<PageTitle>Quote Calculator</PageTitle>
+
+<h3>Quote Calculator</h3>
+
+<div class="container">
+    <div class="d-flex justify-content-center gap-3 mb-6">
+        <MudSlider Value="@amountRequired" Size="Size.Large">How much do you need?</MudSlider>
+        <MudSlider Value="1" Min="1" Max="60" Size="Size.Large">Term</MudSlider>
+    </div>
+
+    <div class="d-flex justify-content-center gap-3 mb-6">
+        <BorrowerDetails />
+    </div>
+
+    <div class="d-flex justify-content-center gap-3 mb-6">
+        <div class="d-flex flex-column align-items-center gap-3">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CalculateQuote_ButtonOnClick">Calculate Quote</MudButton>
+            <p class="text-muted small">Quote does not affect your credit score</p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Loan Amount and Term -->
+    <div class="d-flex flex-column align-items-center gap-4 mb-5">
+        <MudSlider Min="1000" Max="50000" Step="500" Size="Size.Large" Label="How much do you need?" ShowTicks="true" />
+        <MudSlider Min="1" Max="60" Step="1" Size="Size.Large" Label="Loan Term (Months)" ShowTicks="true" />
+    </div>
+
+    <div class="d-flex flex-column align-items-center gap-4 mb-5">
+        <MudSlider Value="@amountRequired" Size="Size.Large">How much do you need?</MudSlider>
+        <MudSlider Value="@term" Min="1" Max="60" Size="Size.Large">Term</MudSlider>
+    </div>
+
+    <!-- Borrower Details -->
+    <div class="d-flex justify-content-center mb-5">
+        <BorrowerDetails />
+    </div>
+
+    <!-- Calculate Quote Button -->
+    <div class="d-flex justify-content-center">
+        <div class="d-flex flex-column align-items-center gap-3">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" OnClick="CalculateQuote_ButtonOnClick">Calculate Quote</MudButton>
+            <p class="text-muted small">This quote does not affect your credit score.</p>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    int amountRequired = 50;
+    int term = 1;
+
+    void CalculateQuote_ButtonOnClick()
+    {
+
+    }
+}

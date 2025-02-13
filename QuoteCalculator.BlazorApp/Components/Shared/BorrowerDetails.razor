@@ -1,0 +1,30 @@
+﻿<div class="container">
+    <div class="d-flex justify-content-center gap-3 mb-6">
+        @* <MudSelect @bind-Value="title" Label="Title" Placeholder="Mr./Mrs." Class="w-25">
+            <MudSelectItem Value="@("Mr.")">Mr.</MudSelectItem>
+            <MudSelectItem Value="@("Mrs.")">Mrs.</MudSelectItem>
+        </MudSelect> *@
+        <MudSelect @bind-Value="title" Label="Title" Placeholder="Mr./Mrs." Class="w-25">
+            <MudSelectItem Value="@("Mr.")">Mr.</MudSelectItem>
+            <MudSelectItem Value="@("Mrs.")">Mrs.</MudSelectItem>
+        </MudSelect>
+        <MudTextField @bind-Value="firstName" Label="First Name" Variant="Variant.Text" Class="w-25"></MudTextField>
+        <MudTextField @bind-Value="lastName" Label="Last Name" Variant="Variant.Text" Class="w-25"></MudTextField>
+    </div>
+
+    <div class="d-flex justify-content-center gap-3 mb-6">
+        <MudDatePicker Label="Date Of Birth" @bind-Date="dateOfBirth" Class="w-25" />
+        <MudTextField @bind-Value="email" Label="Your email" Variant="Variant.Text" Class="w-25"></MudTextField>
+        <MudTextField @bind-Value="mobile" Label="Mobile number" Variant="Variant.Text" Class="w-25"></MudTextField>
+    </div>
+</div>
+
+@code {
+    public required string title { get; set; }
+    public required string firstName { get; set; }
+    public required string lastName { get; set; }
+
+    public DateTime? dateOfBirth = DateTime.Today;
+    public required string mobile { get; set; }
+    public required string email { get; set; }
+}

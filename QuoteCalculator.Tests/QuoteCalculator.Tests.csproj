@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\QuoteCalculator\QuoteCalculator.csproj" />
+    <ProjectReference Include="..\QuoteCalculator\QuoteCalculator.WebApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>
