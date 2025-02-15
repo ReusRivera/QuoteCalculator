@@ -36,7 +36,7 @@ namespace QuoteCalculator.Services.QuotationService
                 var quotationMap = _mapper.Map<QuotationModel>(model);
                 var borrowerMap = _mapper.Map<BorrowerModel>(model);
 
-                var borrower = await _borrower. ValidateNewBorrower(borrowerMap);
+                var borrower = await _borrower.ValidateNewBorrower(borrowerMap);
 
                 if (borrower == null)
                 {

@@ -47,9 +47,9 @@ namespace QuoteCalculator.Services.BorrowerService
         {
             return await _context.Borrower
                 .FirstOrDefaultAsync(b =>
-                    b.FirstName != null && b.FirstName.Equals(borrower.FirstName, StringComparison.OrdinalIgnoreCase) &&
-                    b.LastName != null && b.LastName.Equals(borrower.LastName, StringComparison.OrdinalIgnoreCase) &&
-                    b.DateOfBirth == borrower.DateOfBirth);
+                    b.FirstName != null && b.FirstName.ToLower() == borrower.FirstName.ToLower() &&
+                    b.LastName != null && b.LastName.ToLower() == borrower.LastName.ToLower() &&
+                    b.DateOfBirth.Date == borrower.DateOfBirth.Date);
         }
 
         public async Task<BorrowerModel> ValidateNewBorrower(BorrowerModel borrower)
@@ -59,7 +59,7 @@ namespace QuoteCalculator.Services.BorrowerService
             if (existingBorrower == null)
                 return await AddBorrower(borrower);
 
-            return await UpdateBorrowerDeails(borrower);
+            return await UpdateBorrowerDeails(existingBorrower);
         }
     }
 }
