@@ -18,8 +18,8 @@ namespace QuoteCalculator.Services.LoanApplicationService
 
         public async Task<bool> IsApplicantEligible(QuotationDto quotation)
         {
-            if (IsApplicantOfLegalAge(quotation.DateOfBirth))
-                return false;
+            //if (IsApplicantOfLegalAge(quotation.DateOfBirth))
+            //    return false;
 
             if (await IsMobileNumberBlacklisted(quotation.Mobile))
                 return false;
