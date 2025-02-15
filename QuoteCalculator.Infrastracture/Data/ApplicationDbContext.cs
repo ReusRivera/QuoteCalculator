@@ -13,7 +13,7 @@ namespace QuoteCalculator.Infrastructure.Data
         public DbSet<EmailDomainModel> EmailDomain { get; set; }
         public DbSet<LoanApplicationModel> LoanApplication { get; set; }
         public DbSet<MobileNumberModel> MobileNumber { get; set; }
-        public DbSet<ProductModel> Product { get; set; }
+        //public DbSet<ProductModel> Product { get; set; }
         public DbSet<QuotationModel> Quotation { get; set; }
     }
 }

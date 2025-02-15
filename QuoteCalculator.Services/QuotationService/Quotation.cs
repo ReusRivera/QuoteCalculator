@@ -159,15 +159,13 @@ namespace QuoteCalculator.Services.QuotationService
             }
         }
 
-        public static decimal CalculateMonthlyRepayment(decimal principal, decimal annualInterestRate, int monthlyLoanTerms)
+        public decimal CalculateMonthlyRepayment(decimal loanAmount, decimal annualInterestRate, int monthlyLoanTerms)
         {
             if (annualInterestRate == 0)
-                return principal / monthlyLoanTerms;
+                return loanAmount / monthlyLoanTerms;
 
             decimal monthlyRate = annualInterestRate / 100 / 12;
-            int totalPayments = monthlyLoanTerms;
-
-            decimal monthlyRepayment = principal * (monthlyRate / (1 - (decimal)Math.Pow(1 + (double)monthlyRate, -totalPayments)));
+            decimal monthlyRepayment = loanAmount * (monthlyRate / (1 - (decimal)Math.Pow(1 + (double)monthlyRate, -monthlyLoanTerms)));
 
             return Math.Round(monthlyRepayment, 2);
         }
