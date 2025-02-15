@@ -1,47 +1,40 @@
 ﻿@page "/test"
-@inject HttpClient _httpClient
 
-<MudSelect T="string" Label="Product" @bind-Value="selectedItem">
-    @foreach (var item in productList)
+<MudSelect T="int" Label="Product" @bind-Value="selectedProduct">
+    <MudSelectItem T="int" Value="1">Product 1</MudSelectItem>
+    <MudSelectItem T="int" Value="2">Product 2</MudSelectItem>
+</MudSelect>
+
+<MudSelect T="string" Label="US States" MultiSelection="true" @bind-Value="_value" @bind-SelectedValues="_options">
+    @foreach (var state in _states)
     {
-        <MudSelectItem T="string" Value="@item">@item</MudSelectItem>
+        <MudSelectItem T="string" Value="@state">@state</MudSelectItem>
     }
 </MudSelect>
 
-<MudButton OnClick="LoadItems" Variant="Variant.Filled">Load Items</MudButton>
-
-@if (isLoading)
-{
-    <MudProgressCircular Indeterminate="true" />
-}
-
-<p>Selected: @selectedItem</p>
+<p>Selected: @selectedProduct</p>
 
 @code {
-    private List<string> productList = new();
-    private string? selectedItem;
-    private bool isLoading;
+    private int selectedProduct;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadItems();
-    }
+    private string _value = "Nothing selected";
+    private IEnumerable<string> _options = new HashSet<string> { "Alaska" };
 
-    private async Task LoadItems()
-    {
-        isLoading = true;
-
-        try
-        {
-            productList = await _httpClient.GetFromJsonAsync<List<string>>("api/Product/GetProductList");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error fetching productList: {ex.Message}");
-        }
-        finally
-        {
-            isLoading = false;
-        }
-    }
+    private readonly string[] _states =
+    [
+    "Alabama", "Alaska", "American Samoa", "Arizona",
+    "Arkansas", "California", "Colorado", "Connecticut",
+    "Delaware", "District of Columbia", "Federated States of Micronesia",
+    "Florida", "Georgia", "Guam", "Hawaii", "Idaho",
+    "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
+    "Louisiana", "Maine", "Marshall Islands", "Maryland",
+    "Massachusetts", "Michigan", "Minnesota", "Mississippi",
+    "Missouri", "Montana", "Nebraska", "Nevada",
+    "New Hampshire", "New Jersey", "New Mexico", "New York",
+    "North Carolina", "North Dakota", "Northern Mariana Islands", "Ohio",
+    "Oklahoma", "Oregon", "Palau", "Pennsylvania", "Puerto Rico",
+    "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
+    "Texas", "Utah", "Vermont", "Virgin Island", "Virginia",
+    "Washington", "West Virginia", "Wisconsin", "Wyoming"
+    ];
 }

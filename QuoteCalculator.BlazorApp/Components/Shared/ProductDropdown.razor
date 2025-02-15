@@ -36,8 +36,8 @@
 
         try
         {
-            // productList = await _httpClient.GetFromJsonAsync<List<ProductModel>>("api/Product/GetProductList");
-            productList = await _httpClient.GetFromJsonAsync<List<ProductModel>>("https://localhost:7238/api/Product/GetProductList");
+            // productList = await _httpClient.GetFromJsonAsync<List<ProductModel>>("https://localhost:7238/api/Product/GetProductList");
+            productList = await _httpClient.GetFromJsonAsync<List<ProductModel>>("api/Product/GetProductList");
         }
         catch (Exception ex)
         {
