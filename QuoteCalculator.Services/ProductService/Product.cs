@@ -36,7 +36,7 @@ namespace QuoteCalculator.Services.ProductService
 
                 if (product == null)
                 {
-                    //_logger.LogError("CreateQuotation: Failed to create quotation.");
+                    //_logger.LogError("CreateProduct: Failed to create product.");
                     await transaction.RollbackAsync();
 
                     return null;
@@ -48,11 +48,18 @@ namespace QuoteCalculator.Services.ProductService
             }
             catch (Exception ex)
             {
-                //_logger.LogError(ex, "CreateQuotation: An error occurred while creating quotation.");
+                //_logger.LogError(ex, "CreateProduct: An error occurred while creating product.");
                 await transaction.RollbackAsync();
 
                 return null;
             }
         }
+
+        //public async Task<List<ProductModel?>> GetProductList()
+        //{
+        //    return null;
+        //    return await _context.Product()
+        //        .ToListAsync();
+        //}
     }
 }
