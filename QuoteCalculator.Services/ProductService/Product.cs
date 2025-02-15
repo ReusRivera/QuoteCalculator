@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using QuoteCalculator.Domain.Models;
 using QuoteCalculator.Domain.Models.Dto;
 using QuoteCalculator.Infrastructure.Data;
@@ -16,51 +17,49 @@ namespace QuoteCalculator.Services.ProductService
             _mapper = mapper;
         }
 
-        //private async Task<ProductModel> AddProduct(ProductModel product)
-        //{
-        //    var result = _context.Product.Add(product);
-        //    await _context.SaveChangesAsync();
+        private async Task<ProductModel> AddProduct(ProductModel product)
+        {
+            var result = _context.Product.Add(product);
+            await _context.SaveChangesAsync();
 
-        //    return result.Entity;
-        //}
+            return result.Entity;
+        }
 
         public async Task<ProductModel?> CreateProduct(ProductDto model)
         {
-            return null;
-            //using var transaction = await _context.Database.BeginTransactionAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync();
 
-            //try
-            //{
-            //    var productMap = _mapper.Map<ProductModel>(model);
+            try
+            {
+                var productMap = _mapper.Map<ProductModel>(model);
 
-            //    var product = await AddProduct(productMap);
+                var product = await AddProduct(productMap);
 
-            //    if (product == null)
-            //    {
-            //        //_logger.LogError("CreateProduct: Failed to create product.");
-            //        await transaction.RollbackAsync();
+                if (product == null)
+                {
+                    //_logger.LogError("CreateProduct: Failed to create product.");
+                    await transaction.RollbackAsync();
 
-            //        return null;
-            //    }
+                    return null;
+                }
 
-            //    await transaction.CommitAsync();
+                await transaction.CommitAsync();
 
-            //    return product;
-            //}
-            //catch (Exception ex)
-            //{
-            //    //_logger.LogError(ex, "CreateProduct: An error occurred while creating product.");
-            //    await transaction.RollbackAsync();
+                return product;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex, "CreateProduct: An error occurred while creating product.");
+                await transaction.RollbackAsync();
 
-            //    return null;
-            //}
+                return null;
+            }
         }
 
-        //public async Task<List<ProductModel?>> GetProductList()
-        //{
-        //    return null;
-        //    return await _context.Product()
-        //        .ToListAsync();
-        //}
+        public async Task<List<ProductModel>?> GetAllProductList()
+        {
+            return await _context.Product
+                .ToListAsync();
+        }
     }
 }

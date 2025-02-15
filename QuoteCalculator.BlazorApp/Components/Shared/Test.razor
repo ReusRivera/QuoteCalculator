@@ -1,0 +1,47 @@
+﻿@page "/test"
+@inject HttpClient _httpClient
+
+<MudSelect T="string" Label="Product" @bind-Value="selectedItem">
+    @foreach (var item in productList)
+    {
+        <MudSelectItem T="string" Value="@item">@item</MudSelectItem>
+    }
+</MudSelect>
+
+<MudButton OnClick="LoadItems" Variant="Variant.Filled">Load Items</MudButton>
+
+@if (isLoading)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+
+<p>Selected: @selectedItem</p>
+
+@code {
+    private List<string> productList = new();
+    private string? selectedItem;
+    private bool isLoading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadItems();
+    }
+
+    private async Task LoadItems()
+    {
+        isLoading = true;
+
+        try
+        {
+            productList = await _httpClient.GetFromJsonAsync<List<string>>("api/Product/GetProductList");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching productList: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

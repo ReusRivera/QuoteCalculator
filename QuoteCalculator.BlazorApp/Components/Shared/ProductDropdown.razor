@@ -1,5 +1,52 @@
-﻿<h3>ProductDropdown</h3>
+﻿@using QuoteCalculator.Domain.Models
+
+@inject HttpClient _httpClient
+
+<MudSelect T="string" Label="Product" @bind-Value="selectedProduct">
+    @foreach (var product in productList ?? new List<ProductModel>())
+    {
+        <MudSelectItem T="string" Value="@product.Id.ToString()">@product.Title</MudSelectItem>
+    }
+</MudSelect>
+
+@* <MudButton OnClick="LoadProductListItems" Variant="Variant.Filled">Load Items</MudButton> *@
+<MudButton OnClick="async () => await LoadProductListItems()" Variant="Variant.Filled">Load Items</MudButton>
+
+@if (isLoading)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+
+<p>Selected: @selectedProduct</p>
 
 @code {
+    private List<ProductModel>? productList = new();
+    private string? selectedProduct;
+    private bool isLoading;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProductListItems();
+    }
+
+    private async Task LoadProductListItems()
+    {
+        isLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            // productList = await _httpClient.GetFromJsonAsync<List<ProductModel>>("api/Product/GetProductList");
+            productList = await _httpClient.GetFromJsonAsync<List<ProductModel>>("https://localhost:7238/api/Product/GetProductList");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching productList: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
 }

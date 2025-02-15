@@ -15,6 +15,21 @@ namespace QuoteCalculator.WebApi.Controllers
             _product = product;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetProductList()
+        {
+            try
+            {
+                var productList = await _product.GetAllProductList();
+
+                return Ok(productList);
+            }
+            catch
+            {
+                return StatusCode(500, "An error occurred while processing the request.");
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddProduct([FromBody] ProductDto model)
         {

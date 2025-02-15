@@ -38,6 +38,13 @@ if (app.Environment.IsDevelopment())
 //    //opt.WithOrigins("https://localhost:5001").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
 //});
 
+app.UseCors(builder =>
+{
+    builder.AllowAnyOrigin()
+           .AllowAnyMethod()
+           .AllowAnyHeader();
+});
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

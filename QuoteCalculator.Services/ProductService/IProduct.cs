@@ -6,5 +6,6 @@ namespace QuoteCalculator.Services.ProductService
     public interface IProduct
     {
         Task<ProductModel?> CreateProduct(ProductDto model);
+        Task<List<ProductModel>?> GetAllProductList();
     }
 }

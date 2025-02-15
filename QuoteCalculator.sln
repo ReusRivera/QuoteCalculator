@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuoteCalculator.Tests", "Qu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuoteCalculator.BlazorApp", "QuoteCalculator.BlazorApp\QuoteCalculator.BlazorApp.csproj", "{7AE60DD1-C17D-4B7F-80FA-56159B9DCFA7}"
 	ProjectSection(ProjectDependencies) = postProject
-		{8867AF70-0F70-40B5-8C3D-7CAE2D3ECD5A} = {8867AF70-0F70-40B5-8C3D-7CAE2D3ECD5A}
+		{2F3D9899-7884-40F2-B7A4-AA9E8A888CD7} = {2F3D9899-7884-40F2-B7A4-AA9E8A888CD7}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuoteCalculator.WebApi", "QuoteCalculator.WebApi\QuoteCalculator.WebApi.csproj", "{01AEFD97-9FD8-456A-B9FD-4EBA89B15456}"
