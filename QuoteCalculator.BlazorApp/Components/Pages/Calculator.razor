@@ -1,7 +1,9 @@
 ﻿@using QuoteCalculator.Domain.Models.Dto
 
 @page "/calculator"
-@inject HttpClient httpClient
+
+@inject HttpClient _httpClient
+@inject NavigationManager _navigation
 
 <PageTitle>Quote Calculator</PageTitle>
 
@@ -15,18 +17,18 @@
         </div>
 
         <div class="d-flex flex-column align-items-center gap-4 mb-5">
-            <MudSlider Value="@amountRequired" Size="Size.Large">How much do you need?</MudSlider>
-            <MudSlider Value="@term" Min="1" Max="60" Size="Size.Large">Term</MudSlider>
+            <MudSlider Value="@amountRequired" Size="Size.Large" ValueLabel="true">How much do you need?</MudSlider>
+            <MudSlider Value="@term" Min="1" Max="60" Size="Size.Large" ValueLabel="true">Term</MudSlider>
         </div>
 
         <div class="d-flex justify-content-center mb-5">
             @* <BorrowerDetails /> *@
             <div class="container">
                 <div class="d-flex justify-content-center gap-3 mb-6">
-                    <MudSelect Label="Title" @bind-Value="model.Title" Placeholder="Mr./Mrs." Class="w-25">
+                    @* <MudSelect Label="Title" @bind-Value="model.Title" Placeholder="Mr./Mrs." Class="w-25">
                         <MudSelectItem Value="@("Mr.")">Mr.</MudSelectItem>
                         <MudSelectItem Value="@("Mrs.")">Mrs.</MudSelectItem>
-                    </MudSelect>
+                    </MudSelect> *@
                     <MudTextField Label="First Name" @bind-Value="model.FirstName" Variant="Variant.Text" Class="w-25"></MudTextField>
                     <MudTextField Label="Last Name" @bind-Value="model.LastName" Variant="Variant.Text" Class="w-25"></MudTextField>
                 </div>
@@ -48,6 +50,8 @@
     </div>
 </EditForm>
 
+@* <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" OnClick="NavigateToQuotationComponent">Calculate Quote</MudButton> *@
+
 @code {
     int amountRequired = 50;
     int term = 1;
@@ -57,9 +61,17 @@
     QuotationDto model = new QuotationDto();
     // bool success;
 
+    // private async Task Submit_CalculateQuote(EditContext context)
     private void Submit_CalculateQuote(EditContext context)
     {
         // success = true;
         StateHasChanged();
+
+        // _navigation.NavigateTo("quotation");
+    }
+
+    private void NavigateToQuotationComponent()
+    {
+        _navigation.NavigateTo("quotation");
     }
 }

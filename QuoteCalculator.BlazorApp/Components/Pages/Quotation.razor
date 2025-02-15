@@ -6,56 +6,72 @@
 
 <PageTitle>Quotation</PageTitle>
 
-<h3>Your quote</h3>
+<h3>Your Quote</h3>
 
-<h6>Your information</h6>
+<EditForm Model="@model" OnValidSubmit="Submit_LoanApplication">
+    <DataAnnotationsValidator />
 
-<MudGrid>
-    <MudItem xs="6" sm="6" md="6">
-        <MudField Label="Name" Variant="Variant.Text"></MudField>
-    </MudItem>
-    <MudItem xs="6" sm="6" md="6">
-        <MudTextField @bind-Value="model.FirstName" />
-    </MudItem>
-</MudGrid>
+    <h6>Your Information</h6>
 
-<MudGrid>
-    <MudItem xs="6" sm="6" md="6">
-        <MudField Label="Mobile" Variant="Variant.Text"></MudField>
-    </MudItem>
-    <MudItem xs="6" sm="6" md="6">
-        <MudTextField @bind-Value="model.FirstName"/>
-    </MudItem>
-</MudGrid>
+    <MudGrid>
+        <MudItem xs="6" sm="6" md="6">
+            <MudField Label="Name" Variant="Variant.Text"></MudField>
+        </MudItem>
+        <MudItem xs="6" sm="6" md="6">
+            <MudField @bind-Value="model.FirstName" />
+        </MudItem>
+    </MudGrid>
 
-<MudGrid>
-    <MudItem xs="6" sm="6" md="6">
-        <MudField Label="Email" Variant="Variant.Text"></MudField>
-    </MudItem>
-    <MudItem xs="6" sm="6" md="6">
-        <MudField @bind-Value="model.FirstName" Variant="Variant.Text"></MudField>
-    </MudItem>
-</MudGrid>
+    <MudGrid>
+        <MudItem xs="6" sm="6" md="6">
+            <MudField Label="Mobile" Variant="Variant.Text"></MudField>
+        </MudItem>
+        <MudItem xs="6" sm="6" md="6">
+            <MudField @bind-Value="model.FirstName" />
+        </MudItem>
+    </MudGrid>
 
-<h6>Finance details</h6>
+    <MudGrid>
+        <MudItem xs="6" sm="6" md="6">
+            <MudField Label="Email" Variant="Variant.Text"></MudField>
+        </MudItem>
+        <MudItem xs="6" sm="6" md="6">
+            <MudField @bind-Value="model.FirstName" Variant="Variant.Text"></MudField>
+        </MudItem>
+    </MudGrid>
 
-<MudGrid>
-    <MudItem xs="6" sm="6" md="6">
-        <MudField Label="Finance amount" Variant="Variant.Text"></MudField>
-    </MudItem>
-    <MudItem xs="6" sm="6" md="6">
-        <MudField Label="$1,000" Variant="Variant.Text"></MudField>
-    </MudItem>
-</MudGrid>
+    <h6>Finance Details</h6>
 
-<MudGrid>
-    <MudItem xs="6" sm="6" md="6">
-        <MudField Label="Repayments from" Variant="Variant.Text"></MudField>
-    </MudItem>
-    <MudItem xs="6" sm="6" md="6">
-        <MudField Label="$1,000" Variant="Variant.Text"></MudField>
-    </MudItem>
-</MudGrid>
+    <MudGrid>
+        <MudItem xs="6" sm="6" md="6">
+            <MudField Label="Finance amount" Variant="Variant.Text"></MudField>
+        </MudItem>
+        <MudItem xs="6" sm="6" md="6">
+            <MudField Label="$1,000" Variant="Variant.Text"></MudField>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid>
+        <MudItem xs="6" sm="6" md="6">
+            <MudField Label="Repayments from" Variant="Variant.Text"></MudField>
+        </MudItem>
+        <MudItem xs="6" sm="6" md="6">
+            <MudField Label="$1,000" Variant="Variant.Text"></MudField>
+        </MudItem>
+    </MudGrid>
+
+    <div class="d-flex justify-content-center">
+        <div class="d-flex flex-column align-items-center gap-3">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">Apply Now</MudButton>
+            <p class="text-muted small text-center">
+                Total repayments $1,000, made up of an establishment fee of $1,000,<br>
+                interest of $1,000. The repayment amount is based on the variables<br>
+                selected, is subject to our assessment and suitability, and other important<br>
+                terms and conditions apply.
+            </p>
+        </div>
+    </div>
+</EditForm>
 
 @code {
     QuotationDto model = new QuotationDto();
@@ -64,4 +80,10 @@
     // {
     //     model = await httpClient.GetFromJsonAsync<QuotationDto>("api/");
     // }
+
+    private void Submit_LoanApplication(EditContext context)
+    {
+        // success = true;
+        StateHasChanged();
+    }
 }
