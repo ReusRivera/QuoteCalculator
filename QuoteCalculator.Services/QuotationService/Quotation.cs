@@ -158,5 +158,18 @@ namespace QuoteCalculator.Services.QuotationService
                 return null;
             }
         }
+
+        public static decimal CalculateMonthlyRepayment(decimal principal, decimal annualInterestRate, int monthlyLoanTerms)
+        {
+            if (annualInterestRate == 0)
+                return principal / monthlyLoanTerms;
+
+            decimal monthlyRate = annualInterestRate / 100 / 12;
+            int totalPayments = monthlyLoanTerms;
+
+            decimal monthlyRepayment = principal * (monthlyRate / (1 - (decimal)Math.Pow(1 + (double)monthlyRate, -totalPayments)));
+
+            return Math.Round(monthlyRepayment, 2);
+        }
     }
 }
