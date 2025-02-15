@@ -10,4 +10,8 @@
     <PackageReference Include="MudBlazor" Version="8.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\QuoteCalculator.Domain\QuoteCalculator.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

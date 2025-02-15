@@ -1,30 +1,57 @@
-﻿<div class="container">
+﻿@using System.ComponentModel.DataAnnotations
+@using QuoteCalculator.Domain.Models.Dto
+
+<div class="container">
     <div class="d-flex justify-content-center gap-3 mb-6">
-        @* <MudSelect @bind-Value="title" Label="Title" Placeholder="Mr./Mrs." Class="w-25">
-            <MudSelectItem Value="@("Mr.")">Mr.</MudSelectItem>
-            <MudSelectItem Value="@("Mrs.")">Mrs.</MudSelectItem>
-        </MudSelect> *@
-        <MudSelect @bind-Value="title" Label="Title" Placeholder="Mr./Mrs." Class="w-25">
+        <MudSelect @bind-Value="model.Title" Label="Title" Placeholder="Mr./Mrs." Class="w-25">
             <MudSelectItem Value="@("Mr.")">Mr.</MudSelectItem>
             <MudSelectItem Value="@("Mrs.")">Mrs.</MudSelectItem>
         </MudSelect>
-        <MudTextField @bind-Value="firstName" Label="First Name" Variant="Variant.Text" Class="w-25"></MudTextField>
-        <MudTextField @bind-Value="lastName" Label="Last Name" Variant="Variant.Text" Class="w-25"></MudTextField>
+        <MudTextField @bind-Value="model.FirstName" Label="First Name" Variant="Variant.Text" Class="w-25"></MudTextField>
+        <MudTextField @bind-Value="model.LastName" Label="Last Name" Variant="Variant.Text" Class="w-25"></MudTextField>
     </div>
 
     <div class="d-flex justify-content-center gap-3 mb-6">
-        <MudDatePicker Label="Date Of Birth" @bind-Date="dateOfBirth" Class="w-25" />
-        <MudTextField @bind-Value="email" Label="Your email" Variant="Variant.Text" Class="w-25"></MudTextField>
-        <MudTextField @bind-Value="mobile" Label="Mobile number" Variant="Variant.Text" Class="w-25"></MudTextField>
+        <MudDatePicker Label="Date Of Birth" @bind-Date="dateOfBirthPlaceholder" Class="w-25" />
+        <MudTextField @bind-Value="model.Email" Label="Your email" Variant="Variant.Text" Class="w-25"></MudTextField>
+        <MudTextField @bind-Value="model.Mobile" Label="Mobile number" Variant="Variant.Text" Class="w-25"></MudTextField>
     </div>
 </div>
 
-@code {
-    public required string title { get; set; }
-    public required string firstName { get; set; }
-    public required string lastName { get; set; }
+@* <EditForm Model="@model" OnValidSubmit="OnValidSubmit_CalculateQuote">
+    <DataAnnotationsValidator />
+    <MudStack>
+        <MudItem xs="12" sm="12">
+            <MudCardContent>
+                <MudSelect @bind-Value="model.Title" Label="Title" Placeholder="Mr./Mrs." Class="w-25">
+                    <MudSelectItem Value="@("Mr.")">Mr.</MudSelectItem>
+                    <MudSelectItem Value="@("Mrs.")">Mrs.</MudSelectItem>
+                </MudSelect>
+                <MudTextField Label="First name" HelperText="Max. 8 characters" @bind-Value="model.FirstName" For="@(() => model.FirstName)" />
+                <MudTextField Label="Last name" HelperText="Max. 8 characters" @bind-Value="model.LastName" For="@(() => model.LastName)" />
+                <MudTextField Label="Email" Class="mt-3" @bind-Value="model.Email" For="@(() => model.Email)" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
+            </MudCardActions>
+        </MudItem>
+    </MudStack>
+    <MudTextField Label="First name" HelperText="Max. 8 characters" @bind-Value="model.FirstName" For="@(() => model.FirstName)" />
+    <MudTextField Label="Last name" HelperText="Max. 8 characters" @bind-Value="model.LastName" For="@(() => model.LastName)" />
+    <MudDatePicker Label="Date Of Birth" @bind-Date="dateOfBirthPlaceholder" />
+    <MudTextField @bind-Value="model.Email" Label="Your email" Variant="Variant.Text" ></MudTextField>
+    <MudTextField @bind-Value="model.Mobile" Label="Mobile number" Variant="Variant.Text" ></MudTextField>
+</EditForm> *@
 
-    public DateTime? dateOfBirth = DateTime.Today;
-    public required string mobile { get; set; }
-    public required string email { get; set; }
+@code {
+    QuotationDto model = new QuotationDto();
+    bool success;
+
+    public DateTime? dateOfBirthPlaceholder = DateTime.Today.AddYears(-18);
+
+    private void OnValidSubmit_CalculateQuote(EditContext context)
+    {
+        success = true;
+        StateHasChanged();
+    }
 }

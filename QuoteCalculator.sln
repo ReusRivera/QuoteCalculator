@@ -22,6 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuoteCalculator.Tests", "Qu
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuoteCalculator.BlazorApp", "QuoteCalculator.BlazorApp\QuoteCalculator.BlazorApp.csproj", "{7AE60DD1-C17D-4B7F-80FA-56159B9DCFA7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8867AF70-0F70-40B5-8C3D-7CAE2D3ECD5A} = {8867AF70-0F70-40B5-8C3D-7CAE2D3ECD5A}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

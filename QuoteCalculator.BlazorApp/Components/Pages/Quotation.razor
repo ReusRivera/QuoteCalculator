@@ -1,0 +1,16 @@
+﻿@page "/quotation"
+@using QuoteCalculator.Domain.Models.Dto
+
+<PageTitle>Quotation</PageTitle>
+
+<h3>Your quote</h3>
+
+<h6>Your information</h6>
+
+<MudTextField Label="First name" HelperText="Max. 8 characters" @bind-Value="model.FirstName" For="@(() => model.FirstName)" />
+
+<h6>Finance details</h6>
+
+@code {
+    QuotationDto model = new QuotationDto();
+}
