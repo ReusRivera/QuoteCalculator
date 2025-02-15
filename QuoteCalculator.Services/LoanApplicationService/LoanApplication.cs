@@ -18,8 +18,8 @@ namespace QuoteCalculator.Services.LoanApplicationService
 
         public async Task<bool> IsApplicantEligible(QuotationDto quotation)
         {
-            //if (IsApplicantOfLegalAge(quotation.DateOfBirth))
-            //    return false;
+            if (IsApplicantOfLegalAge(quotation.DateOfBirth))
+                return false;
 
             if (await IsMobileNumberBlacklisted(quotation.Mobile))
                 return false;
@@ -30,9 +30,14 @@ namespace QuoteCalculator.Services.LoanApplicationService
             return true;
         }
 
-        private static bool IsApplicantOfLegalAge(DateOnly birthDate)
+        //private static bool IsApplicantOfLegalAge(DateOnly birthDate)
+        //{
+        //    return DateOnly.FromDateTime(DateTime.Today) >= birthDate.AddYears(18);
+        //}
+
+        private static bool IsApplicantOfLegalAge(DateTime birthDate)
         {
-            return DateOnly.FromDateTime(DateTime.Today) >= birthDate.AddYears(18);
+            return DateTime.Today >= birthDate.AddYears(18);
         }
 
         private async Task<bool> IsMobileNumberBlacklisted(string mobileNumber)

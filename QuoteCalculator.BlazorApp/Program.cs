@@ -9,6 +9,8 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddMudServices();
 
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7238/") });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

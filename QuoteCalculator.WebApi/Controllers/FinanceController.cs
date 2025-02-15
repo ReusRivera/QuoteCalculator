@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuoteCalculator.Domain.Models.Dto;
 
-namespace QuoteCalculator.Controllers
+namespace QuoteCalculator.WebApi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

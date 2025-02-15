@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace QuoteCalculator.Controllers
+namespace QuoteCalculator.WebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]

@@ -2,7 +2,7 @@
 using QuoteCalculator.Domain.Models.Dto;
 using QuoteCalculator.Services.LoanApplicationService;
 
-namespace QuoteCalculator.Controllers
+namespace QuoteCalculator.WebApi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

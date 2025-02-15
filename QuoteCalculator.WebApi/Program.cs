@@ -1,5 +1,5 @@
-using QuoteCalculator.ApplicationRegistration;
 using QuoteCalculator.Infrastructure;
+using QuoteCalculator.WebApi.ApplicationRegistration;
 
 var builder = WebApplication.CreateBuilder(args);
 

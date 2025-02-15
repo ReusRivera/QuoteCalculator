@@ -1,7 +1,7 @@
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using QuoteCalculator.Controllers;
+using QuoteCalculator.WebApi.Controllers;
 using QuoteCalculator.Domain.Models.Dto;
 using QuoteCalculator.Services.QuotationService;
 

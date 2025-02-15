@@ -4,6 +4,7 @@
     {
         public Guid Id { get; set; } = new Guid();
         public required string Title { get; set; }
+        public double Interest { get; set; }
 
         public DateTime DateCreated { get; set; } = DateTime.UtcNow;
         public DateTime DateModified { get; set; }

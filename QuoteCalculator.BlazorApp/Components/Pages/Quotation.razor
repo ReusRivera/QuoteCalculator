@@ -1,5 +1,8 @@
-﻿@page "/quotation"
-@using QuoteCalculator.Domain.Models.Dto
+﻿@using QuoteCalculator.Domain.Models.Dto
+
+@page "/quotation"
+
+@inject HttpClient httpClient
 
 <PageTitle>Quotation</PageTitle>
 
@@ -7,10 +10,58 @@
 
 <h6>Your information</h6>
 
-<MudTextField Label="First name" HelperText="Max. 8 characters" @bind-Value="model.FirstName" For="@(() => model.FirstName)" />
+<MudGrid>
+    <MudItem xs="6" sm="6" md="6">
+        <MudField Label="Name" Variant="Variant.Text"></MudField>
+    </MudItem>
+    <MudItem xs="6" sm="6" md="6">
+        <MudTextField @bind-Value="model.FirstName" />
+    </MudItem>
+</MudGrid>
+
+<MudGrid>
+    <MudItem xs="6" sm="6" md="6">
+        <MudField Label="Mobile" Variant="Variant.Text"></MudField>
+    </MudItem>
+    <MudItem xs="6" sm="6" md="6">
+        <MudTextField @bind-Value="model.FirstName"/>
+    </MudItem>
+</MudGrid>
+
+<MudGrid>
+    <MudItem xs="6" sm="6" md="6">
+        <MudField Label="Email" Variant="Variant.Text"></MudField>
+    </MudItem>
+    <MudItem xs="6" sm="6" md="6">
+        <MudField @bind-Value="model.FirstName" Variant="Variant.Text"></MudField>
+    </MudItem>
+</MudGrid>
 
 <h6>Finance details</h6>
 
+<MudGrid>
+    <MudItem xs="6" sm="6" md="6">
+        <MudField Label="Finance amount" Variant="Variant.Text"></MudField>
+    </MudItem>
+    <MudItem xs="6" sm="6" md="6">
+        <MudField Label="$1,000" Variant="Variant.Text"></MudField>
+    </MudItem>
+</MudGrid>
+
+<MudGrid>
+    <MudItem xs="6" sm="6" md="6">
+        <MudField Label="Repayments from" Variant="Variant.Text"></MudField>
+    </MudItem>
+    <MudItem xs="6" sm="6" md="6">
+        <MudField Label="$1,000" Variant="Variant.Text"></MudField>
+    </MudItem>
+</MudGrid>
+
 @code {
     QuotationDto model = new QuotationDto();
+
+    // protected override Task OnInitializedAsync()
+    // {
+    //     model = await httpClient.GetFromJsonAsync<QuotationDto>("api/");
+    // }
 }
