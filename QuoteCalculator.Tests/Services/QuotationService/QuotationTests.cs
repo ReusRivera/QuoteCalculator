@@ -47,7 +47,7 @@ namespace QuoteCalculator.Tests.Services.QuotationService
         }
 
         [Fact]
-        public void Sample_CalculateMonthlyRepayment_Return_Decimal()
+        public void CalculateMonthlyRepayment_Return_DecimalValue()
         {
             // Arrange
             decimal loanAmount = 100000m;
