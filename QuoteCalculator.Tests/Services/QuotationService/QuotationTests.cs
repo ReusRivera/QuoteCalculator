@@ -6,6 +6,7 @@ using QuoteCalculator.Domain.Models;
 using QuoteCalculator.Domain.Models.Dto;
 using QuoteCalculator.Infrastructure.Data;
 using QuoteCalculator.Services.BorrowerService;
+using QuoteCalculator.Services.FinanceService;
 using QuoteCalculator.Services.QuotationService;
 
 namespace QuoteCalculator.Tests.Services.QuotationService
@@ -28,8 +29,9 @@ namespace QuoteCalculator.Tests.Services.QuotationService
             var context = new ApplicationDbContext(options2);
             var mapper = A.Fake<IMapper>();
             var borrower = A.Fake<IBorrower>();
+            var finance = A.Fake<IFinance>();
 
-            _quotationService = new Quotation(context, mapper, borrower);
+            _quotationService = new Quotation(context, mapper, borrower, finance);
         }
 
         [Fact]

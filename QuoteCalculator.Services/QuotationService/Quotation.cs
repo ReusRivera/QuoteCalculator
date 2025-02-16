@@ -3,6 +3,7 @@ using QuoteCalculator.Domain.Models;
 using QuoteCalculator.Domain.Models.Dto;
 using QuoteCalculator.Infrastructure.Data;
 using QuoteCalculator.Services.BorrowerService;
+using QuoteCalculator.Services.FinanceService;
 
 namespace QuoteCalculator.Services.QuotationService
 {
@@ -11,12 +12,14 @@ namespace QuoteCalculator.Services.QuotationService
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IBorrower _borrower;
+        private readonly IFinance _finance;
 
-        public Quotation(ApplicationDbContext context, IMapper mapper, IBorrower borrower)
+        public Quotation(ApplicationDbContext context, IMapper mapper, IBorrower borrower, IFinance finance)
         {
             _context = context;
             _mapper = mapper;
             _borrower = borrower;
+            _finance = finance;
         }
 
         private async Task<QuotationModel> AddQuotation(QuotationModel quotation)
@@ -115,7 +118,7 @@ namespace QuoteCalculator.Services.QuotationService
             }
         }
 
-        public async Task<QuotationModel?> CalculateQuotation(QuotationDto model)
+        public async Task<FinanceModel?> CalculateQuotation(QuotationDto model)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -146,14 +149,19 @@ namespace QuoteCalculator.Services.QuotationService
                     return null;
                 }
 
-                //decimal decimalAmount = quotation.AmountRequired;
-                //decimal decimalTerm = quotation.Term;
+                var finance = await _finance.CreateFinance(quotation, model.Product);
 
-                //var finance = CalculateMonthlyRepayment(decimalAmount, );
+                if (finance == null)
+                {
+                    //_logger.LogError("CalculateQuotation: Failed to create finance.");
+                    await transaction.RollbackAsync();
+
+                    return null;
+                }
 
                 await transaction.CommitAsync();
 
-                return quotation;
+                return finance;
             }
             catch (Exception ex)
             {

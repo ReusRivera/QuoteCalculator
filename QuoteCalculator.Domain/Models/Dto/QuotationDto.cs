@@ -34,6 +34,8 @@ namespace QuoteCalculator.Domain.Models.Dto
 
         [Required]
         public ProductModel Product { get; set; }
+
+        public string? RepaymentSchedule { get; set; } = "Monthly";
     }
 
     public class QuotationDto
@@ -68,5 +70,7 @@ namespace QuoteCalculator.Domain.Models.Dto
 
         //[Required]
         public ProductModel Product { get; set; }
+
+        public string? RepaymentSchedule { get; set; } = "Monthly";
     }
 }

@@ -20,21 +20,41 @@ namespace QuoteCalculator.Services.FinanceService
             return result.Entity;
         }
 
-        public async Task<QuotationModel?> CreateFinance(QuotationModel quotation)
+        private static FinanceModel CreateFinanceModel(QuotationModel quotation, ProductModel product, decimal financeAmount)
+        {
+            return new FinanceModel()
+            {
+                FinanceAmount = financeAmount,
+                RepaymentSchedule = "Monthly",
+                Quotation = quotation,
+                Product = product
+            };
+        }
+
+        public async Task<FinanceModel?> CreateFinance(QuotationModel quotation, ProductModel product)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
                 decimal decimalAmount = quotation.AmountRequired;
-                decimal decimalTerm = quotation.Term;
-                //var asd = quotation.Pro
 
-                //var repayment = CalculateMonthlyRepayment(decimalAmount, );
+                var repayment = CalculateMonthlyRepayment(decimalAmount, product.Interest, quotation.Term);
+                var model = CreateFinanceModel(quotation, product, repayment);
+
+                var finance = await AddFinance(model);
+
+                if (finance == null)
+                {
+                    //_logger.LogError("CreateFinance: Failed to create finance.");
+                    await transaction.RollbackAsync();
+
+                    return null;
+                }
 
                 await transaction.CommitAsync();
 
-                return quotation;
+                return finance;
             }
             catch (Exception ex)
             {

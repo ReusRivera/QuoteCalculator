@@ -6,6 +6,6 @@ namespace QuoteCalculator.Services.QuotationService
     public interface IQuotation
     {
         Task<QuotationModel?> CreateQuotation(QuotationDto model);
-        Task<QuotationModel?> CalculateQuotation(QuotationDto model);
+        Task<FinanceModel?> CalculateQuotation(QuotationDto model);
     }
 }
