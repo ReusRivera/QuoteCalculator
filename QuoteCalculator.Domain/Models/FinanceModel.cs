@@ -6,6 +6,7 @@
         public int FinanceAmount { get; set; }
         public required string RepaymentSchedule { get; set; }
         public required QuotationModel Quotation { get; set; }
+        public required ProductModel Product { get; set; }
 
         public DateTime DateCreated { get; set; } = DateTime.UtcNow;
         public DateTime DateModified { get; set; }
