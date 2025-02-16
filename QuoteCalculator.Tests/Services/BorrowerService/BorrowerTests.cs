@@ -17,6 +17,7 @@ namespace QuoteCalculator.Tests.Services.BorrowerService
                 .Options;
 
             var context = new ApplicationDbContext(options);
+
             _borrowerService = new Borrower(context);
         }
 

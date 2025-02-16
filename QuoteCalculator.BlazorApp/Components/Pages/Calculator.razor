@@ -1,4 +1,5 @@
 ﻿@using System.Globalization
+@using QuoteCalculator.Domain.Models
 @using QuoteCalculator.Domain.Models.Dto
 
 @page "/calculator"
@@ -12,16 +13,26 @@
 
 <EditForm FormName="Form_CalculateQuote" Model="@model" OnValidSubmit="Submit_CalculateQuote">
     <DataAnnotationsValidator />
-    @* <ValidationSummary></ValidationSummary> *@
     <div class="container">
-        @* <div class="d-flex flex-column align-items-center gap-4 mb-5">
-            <ProductDropdown />
-        </div> *@
+        <div class="d-flex flex-column align-items-center gap-4 mb-5">
+            @* <ProductDropdown /> *@
+            <MudStack Row="true">
+                <MudSelect Label="Select a product" T="ProductModel" @bind-Value="model.Product">
+                    @foreach (var product in productList ?? new List<ProductModel>())
+                    {
+                        <MudSelectItem T="ProductModel" Value="@product">@product.Title</MudSelectItem>
+                    }
+                </MudSelect>
+
+                @if (isLoading)
+                {
+                    <MudProgressCircular Indeterminate="true" />
+                }
+            </MudStack>
+        </div>
 
         <div class="d-flex flex-column align-items-center gap-4 mb-5">
-            @* <MudSlider T="decimal" Size="Size.Large" Value="@_amountRequired" Min="100" Max="1000" ValueLabel="true" Culture="@_culture" ValueLabelFormat="_format">How much do you need?</MudSlider> *@
             <MudSlider T="int" Size="Size.Large" @bind-Value="@model.AmountRequired" Min="100" Max="1000" ValueLabel="true" Culture="@_culture" ValueLabelFormat="_format">How much do you need?</MudSlider>
-            @* <MudSlider Size="Size.Large" Value="@_term" Min="1" Max="60" ValueLabel="true">Term</MudSlider> *@
             <MudSlider Size="Size.Large" @bind-Value="@model.Term" Min="1" Max="60" ValueLabel="true">Term</MudSlider>
         </div>
 
@@ -47,7 +58,6 @@
 
         <div class="d-flex justify-content-center">
             <div class="d-flex flex-column align-items-center gap-3">
-                @* <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">Calculate Quote</MudButton> *@
                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">Calculate Quote</MudButton>
                 <p class="text-muted small">This quote does not affect your credit score.</p>
             </div>
@@ -62,6 +72,10 @@
     private string _format = "C";
     private CultureInfo _culture = EnglishMoneyCulture;
     public DateTime? dateOfBirthPlaceholder = DateTime.Today.AddYears(-18);
+    private bool isSuccess = false;
+
+    private List<ProductModel>? productList = new();
+    private bool isLoading;
 
     QuotationDto model = new QuotationDto();
 
@@ -78,6 +92,11 @@
 
     private async Task Submit_CalculateQuote(EditContext context)
     {
+        if (!isSuccess)
+        {
+            NavigateToQuotationComponent();
+        }
+
         StateHasChanged();
 
         var result = await _httpClient.PostAsJsonAsync("api/Quotation/CalculateQuote", model);
@@ -91,5 +110,31 @@
     private void NavigateToQuotationComponent()
     {
         _navigation.NavigateTo("quotation");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProductListItems();
+    }
+
+    private async Task LoadProductListItems()
+    {
+        isLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            // productList = await _httpClient.GetFromJsonAsync<List<ProductModel>>("https://localhost:7238/api/Product/GetProductList");
+            productList = await _httpClient.GetFromJsonAsync<List<ProductModel>>("api/Product/GetProductList");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching productList: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
     }
 }

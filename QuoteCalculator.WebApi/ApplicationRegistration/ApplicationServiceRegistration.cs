@@ -1,5 +1,6 @@
 ﻿using QuoteCalculator.Services.BorrowerService;
 using QuoteCalculator.Services.EmailService;
+using QuoteCalculator.Services.FinanceService;
 using QuoteCalculator.Services.LoanApplicationService;
 using QuoteCalculator.Services.ProductService;
 using QuoteCalculator.Services.QuotationService;
@@ -12,6 +13,7 @@ namespace QuoteCalculator.WebApi.ApplicationRegistration
         {
             services.AddScoped<IBorrower, Borrower>();
             services.AddScoped<IEmail, Email>();
+            services.AddScoped<IFinance, Finance>();
             services.AddScoped<ILoanApplication, LoanApplication>();
             services.AddScoped<IProduct, Product>();
             services.AddScoped<IQuotation, Quotation>();

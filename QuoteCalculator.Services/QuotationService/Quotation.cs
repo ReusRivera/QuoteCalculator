@@ -146,6 +146,11 @@ namespace QuoteCalculator.Services.QuotationService
                     return null;
                 }
 
+                //decimal decimalAmount = quotation.AmountRequired;
+                //decimal decimalTerm = quotation.Term;
+
+                //var finance = CalculateMonthlyRepayment(decimalAmount, );
+
                 await transaction.CommitAsync();
 
                 return quotation;
@@ -157,17 +162,6 @@ namespace QuoteCalculator.Services.QuotationService
 
                 return null;
             }
-        }
-
-        public decimal CalculateMonthlyRepayment(decimal loanAmount, decimal annualInterestRate, int monthlyLoanTerms)
-        {
-            if (annualInterestRate == 0)
-                return loanAmount / monthlyLoanTerms;
-
-            decimal monthlyRate = annualInterestRate / 100 / 12;
-            decimal monthlyRepayment = loanAmount * (monthlyRate / (1 - (decimal)Math.Pow(1 + (double)monthlyRate, -monthlyLoanTerms)));
-
-            return Math.Round(monthlyRepayment, 2);
         }
     }
 }

@@ -45,23 +45,5 @@ namespace QuoteCalculator.Tests.Services.QuotationService
             result.Should().NotBeNull();
             result.Should().BeOfType<QuotationModel>();
         }
-
-        [Fact]
-        public void CalculateMonthlyRepayment_Return_DecimalValue()
-        {
-            // Arrange
-            decimal loanAmount = 100000m;
-            decimal annualInterestRate = 5.5m;
-            int monthlyLoanTerms = 120;
-
-            decimal expectedRepaymentAmount = 1085.26m;
-
-            // Act
-            var result = _quotationService.CalculateMonthlyRepayment(loanAmount, annualInterestRate, monthlyLoanTerms);
-
-            // Assert
-            result.Should().NotBe(default);
-            result.Should().Be(expectedRepaymentAmount);
-        }
     }
 }

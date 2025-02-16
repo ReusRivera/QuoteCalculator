@@ -6,6 +6,7 @@
         public int AmountRequired { get; set; }
         public int Term { get; set; }
         public required BorrowerModel Borrower { get; set; }
+        //public required ProductModel Product { get; set; }
 
         public DateTime DateCreated { get; set; } = DateTime.UtcNow;
         public DateTime DateModified { get; set; }
