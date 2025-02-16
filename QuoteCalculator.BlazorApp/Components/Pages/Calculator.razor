@@ -1,4 +1,5 @@
-﻿@using QuoteCalculator.Domain.Models.Dto
+﻿@using System.Globalization
+@using QuoteCalculator.Domain.Models.Dto
 
 @page "/calculator"
 
@@ -9,65 +10,82 @@
 
 <h3>Quote Calculator</h3>
 
-<EditForm Model="@model" OnValidSubmit="Submit_CalculateQuote">
+<EditForm FormName="Form_CalculateQuote" Model="@model" OnValidSubmit="Submit_CalculateQuote">
     <DataAnnotationsValidator />
+    @* <ValidationSummary></ValidationSummary> *@
     <div class="container">
-        <div class="d-flex flex-column align-items-center gap-4 mb-5">
+        @* <div class="d-flex flex-column align-items-center gap-4 mb-5">
             <ProductDropdown />
-        </div>
+        </div> *@
 
         <div class="d-flex flex-column align-items-center gap-4 mb-5">
-            <MudSlider Value="@amountRequired" Size="Size.Large" ValueLabel="true">How much do you need?</MudSlider>
-            <MudSlider Value="@term" Min="1" Max="60" Size="Size.Large" ValueLabel="true">Term</MudSlider>
+            @* <MudSlider T="decimal" Size="Size.Large" Value="@_amountRequired" Min="100" Max="1000" ValueLabel="true" Culture="@_culture" ValueLabelFormat="_format">How much do you need?</MudSlider> *@
+            <MudSlider T="int" Size="Size.Large" @bind-Value="@model.AmountRequired" Min="100" Max="1000" ValueLabel="true" Culture="@_culture" ValueLabelFormat="_format">How much do you need?</MudSlider>
+            @* <MudSlider Size="Size.Large" Value="@_term" Min="1" Max="60" ValueLabel="true">Term</MudSlider> *@
+            <MudSlider Size="Size.Large" @bind-Value="@model.Term" Min="1" Max="60" ValueLabel="true">Term</MudSlider>
         </div>
 
         <div class="d-flex justify-content-center mb-5">
             @* <BorrowerDetails /> *@
             <div class="container">
                 <div class="d-flex justify-content-center gap-3 mb-6">
-                    @* <MudSelect Label="Title" @bind-Value="model.Title" Placeholder="Mr./Mrs." Class="w-25">
-                        <MudSelectItem Value="@("Mr.")">Mr.</MudSelectItem>
-                        <MudSelectItem Value="@("Mrs.")">Mrs.</MudSelectItem>
-                    </MudSelect> *@
-                    <MudTextField Label="First Name" @bind-Value="model.FirstName" Variant="Variant.Text" Class="w-25"></MudTextField>
-                    <MudTextField Label="Last Name" @bind-Value="model.LastName" Variant="Variant.Text" Class="w-25"></MudTextField>
+                    <MudSelect Label="Title" Class="w-25" T="string" Placeholder="Mr./Mrs." @bind-Value="model.Title" For="@(() => model.Title)">
+                        <MudSelectItem T="string" Value="@("Mr.")">Mr.</MudSelectItem>
+                        <MudSelectItem T="string" Value="@("Mrs.")">Mrs.</MudSelectItem>
+                    </MudSelect>
+                    <MudTextField Variant="Variant.Text" Class="w-25" Label="First Name" @bind-Value="model.FirstName" For="@(() => model.FirstName)"></MudTextField>
+                    <MudTextField Variant="Variant.Text" Class="w-25" Label="Last Name" @bind-Value="model.LastName" For="@(() => model.LastName)"></MudTextField>
                 </div>
 
                 <div class="d-flex justify-content-center gap-3 mb-6">
-                    <MudDatePicker Label="Date Of Birth" @bind-Date="dateOfBirthPlaceholder" Class="w-25" />
-                    <MudTextField Label="Your email" @bind-Value="model.Email" Variant="Variant.Text" Class="w-25"></MudTextField>
-                    <MudTextField Label="Mobile number" @bind-Value="model.Mobile" Variant="Variant.Text" Class="w-25"></MudTextField>
+                    <MudDatePicker Class="w-25" Label="Date Of Birth" @bind-Date="dateOfBirthPlaceholder" For="@(() => model.DateOfBirth)"/>
+                    <MudTextField Variant="Variant.Text" Class="w-25" Label="Your email" @bind-Value="model.Email" For="@(() => model.Email)"></MudTextField>
+                    <MudTextField Variant="Variant.Text" Class="w-25" Label="Mobile number" @bind-Value="model.Mobile" For="@(() => model.Mobile)"></MudTextField>
                 </div>
             </div>
         </div>
 
         <div class="d-flex justify-content-center">
             <div class="d-flex flex-column align-items-center gap-3">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">Calculate Quote</MudButton>
+                @* <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">Calculate Quote</MudButton> *@
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">Calculate Quote</MudButton>
                 <p class="text-muted small">This quote does not affect your credit score.</p>
             </div>
         </div>
     </div>
 </EditForm>
 
-@* <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" OnClick="NavigateToQuotationComponent">Calculate Quote</MudButton> *@
-
 @code {
-    int amountRequired = 50;
-    int term = 1;
+    int _amountRequired = 50;
+    int _term = 1;
 
+    private string _format = "C";
+    private CultureInfo _culture = EnglishMoneyCulture;
     public DateTime? dateOfBirthPlaceholder = DateTime.Today.AddYears(-18);
 
     QuotationDto model = new QuotationDto();
-    // bool success;
 
-    // private async Task Submit_CalculateQuote(EditContext context)
-    private void Submit_CalculateQuote(EditContext context)
+    private static CultureInfo EnglishMoneyCulture
     {
-        // success = true;
+        get
+        {
+            var culture = (CultureInfo)CultureInfo.GetCultureInfo("en").Clone();
+            culture.NumberFormat.CurrencySymbol = "$";
+
+            return culture;
+        }
+    }
+
+    private async Task Submit_CalculateQuote(EditContext context)
+    {
         StateHasChanged();
 
-        // _navigation.NavigateTo("quotation");
+        var result = await _httpClient.PostAsJsonAsync("api/Quotation/CalculateQuote", model);
+
+        if (result.IsSuccessStatusCode)
+        {
+            NavigateToQuotationComponent();
+        }
     }
 
     private void NavigateToQuotationComponent()

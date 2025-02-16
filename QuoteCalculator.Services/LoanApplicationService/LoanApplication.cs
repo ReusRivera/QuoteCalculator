@@ -30,14 +30,12 @@ namespace QuoteCalculator.Services.LoanApplicationService
             return true;
         }
 
-        //private static bool IsApplicantOfLegalAge(DateOnly birthDate)
-        //{
-        //    return DateOnly.FromDateTime(DateTime.Today) >= birthDate.AddYears(18);
-        //}
-
-        private static bool IsApplicantOfLegalAge(DateTime birthDate)
+        private static bool IsApplicantOfLegalAge(DateTime? birthDate)
         {
-            return DateTime.Today >= birthDate.AddYears(18);
+            if (!birthDate.HasValue)
+                return false;
+
+            return DateTime.Today >= birthDate.Value.AddYears(18);
         }
 
         private async Task<bool> IsMobileNumberBlacklisted(string mobileNumber)

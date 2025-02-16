@@ -63,6 +63,7 @@
     private decimal _value = 50.0m;
     private string _selectedFormat = "C";
     private CultureInfo _selectedCulture = EnglishMoneyCulture;
+
     private List<CultureInfo> _availableCultures = new()
     {
         EnglishMoneyCulture,
@@ -75,6 +76,7 @@
         {
             var culture = (CultureInfo)CultureInfo.GetCultureInfo("en").Clone();
             culture.NumberFormat.CurrencySymbol = "$";
+
             return culture;
         }
     }
@@ -85,6 +87,7 @@
         {
             var culture = (CultureInfo)CultureInfo.GetCultureInfo("de").Clone();
             culture.NumberFormat.CurrencySymbol = "€";
+
             return culture;
         }
     }

@@ -2,7 +2,7 @@
 
 @page "/quotation"
 
-@inject HttpClient httpClient
+@inject HttpClient _httpClient
 
 <PageTitle>Quotation</PageTitle>
 
@@ -74,12 +74,38 @@
 </EditForm>
 
 @code {
-    QuotationDto model = new QuotationDto();
+    QuotationDto? model = new QuotationDto();
+    private bool isLoading;
 
     // protected override Task OnInitializedAsync()
     // {
     //     model = await httpClient.GetFromJsonAsync<QuotationDto>("api/");
     // }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadQuotationDetails();
+    }
+
+    private async Task LoadQuotationDetails()
+    {
+        isLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            model = await _httpClient.GetFromJsonAsync<QuotationDto>("api/Product/GetProductList");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching quotation: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
 
     private void Submit_LoanApplication(EditContext context)
     {
