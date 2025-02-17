@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuoteCalculator.Domain.Models.Dto;
+using QuoteCalculator.Domain.Models.ViewModels;
 using QuoteCalculator.Services.QuotationService;
 
 namespace QuoteCalculator.WebApi.Controllers
@@ -30,7 +31,7 @@ namespace QuoteCalculator.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CalculateQuote([FromBody] QuotationDto model)
+        public async Task<IActionResult> CalculateQuote([FromBody] QuotationViewModel model)
         {
             if (model == null)
                 return BadRequest("Invalid quotation data.");
@@ -42,5 +43,37 @@ namespace QuoteCalculator.WebApi.Controllers
 
             return Ok(quotation);
         }
+
+        #region Mock Data
+        [HttpGet]
+        public async Task<IActionResult> GetMockQuote(/*string? financeId*/)
+        {
+            //if (string.IsNullOrEmpty(financeId))
+            //    return BadRequest("Invalid financeId.");
+
+            var model = new QuotationViewModel();
+
+            var quotation = await _quotation.CalculateMockQuotation(model);
+
+            if (quotation == null)
+                return StatusCode(500, "An error occurred while processing the request.");
+
+            return Ok(quotation);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CalculateMockQuote([FromBody] QuotationViewModel model)
+        {
+            if (model == null)
+                return BadRequest("Invalid quotation data.");
+
+            var quotation = await _quotation.CalculateMockQuotation(model);
+
+            if (quotation == null)
+                return StatusCode(500, "An error occurred while processing the request.");
+
+            return Ok(quotation);
+        }
+        #endregion
     }
 }

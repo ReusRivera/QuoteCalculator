@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using QuoteCalculator.Domain.Models.Dto;
+using QuoteCalculator.Domain.Models;
 using QuoteCalculator.Infrastructure.Data;
 using QuoteCalculator.Services.EmailService;
 
@@ -16,15 +16,15 @@ namespace QuoteCalculator.Services.LoanApplicationService
             _email = email;
         }
 
-        public async Task<bool> IsApplicantEligible(QuotationDto quotation)
+        public async Task<bool> IsApplicantEligible(BorrowerModel borrower)
         {
-            if (IsApplicantOfLegalAge(quotation.DateOfBirth))
+            if (IsApplicantOfLegalAge(borrower.DateOfBirth))
                 return false;
 
-            if (await IsMobileNumberBlacklisted(quotation.Mobile))
+            if (await IsMobileNumberBlacklisted(borrower.Mobile))
                 return false;
 
-            if (await _email.IsEmailAllowed(quotation.Email))
+            if (await _email.IsEmailAllowed(borrower.Email))
                 return false;
 
             return true;
@@ -44,9 +44,9 @@ namespace QuoteCalculator.Services.LoanApplicationService
                 .AnyAsync(e => !e.IsAllowed && e.MobileNumber.Equals(mobileNumber, StringComparison.OrdinalIgnoreCase));
         }
 
-        public async Task<bool> ApplyLoanApplication(QuotationDto quotation)
+        public async Task<bool> ApplyLoanApplication(BorrowerModel borrower)
         {
-            if (!await IsApplicantEligible(quotation))
+            if (!await IsApplicantEligible(borrower))
                 return false;
 
             return true;

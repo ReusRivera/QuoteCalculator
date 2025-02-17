@@ -5,7 +5,7 @@
         public Guid Id { get; set; } = new Guid();
         public int AmountRequired { get; set; }
         public int Term { get; set; }
-        public required BorrowerModel Borrower { get; set; }
+        public BorrowerModel? Borrower { get; set; }
 
         public DateTime DateCreated { get; set; } = DateTime.UtcNow;
         public DateTime DateModified { get; set; }

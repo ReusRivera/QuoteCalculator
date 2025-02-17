@@ -1,8 +1,10 @@
-﻿@using QuoteCalculator.Domain.Models.Dto
+﻿@using QuoteCalculator.Domain.Models
+@using QuoteCalculator.Domain.Models.ViewModels
 
 @page "/quotation"
 
 @inject HttpClient _httpClient
+@inject NavigationManager _navigation
 
 <PageTitle>Quotation</PageTitle>
 
@@ -11,54 +13,58 @@
 <EditForm Model="@model" OnValidSubmit="Submit_LoanApplication">
     <DataAnnotationsValidator />
 
-    <h6>Your Information</h6>
+    <div class="d-flex flex-column align-items-center gap-2 mb-5">
+        <h6>Your Information</h6>
 
-    <MudGrid>
-        <MudItem xs="6" sm="6" md="6">
-            <MudField Label="Name" Variant="Variant.Text"></MudField>
-        </MudItem>
-        <MudItem xs="6" sm="6" md="6">
-            <MudField @bind-Value="model.FirstName" />
-        </MudItem>
-    </MudGrid>
+        @* <MudGrid>
+            <MudItem xs="10" sm="10" md="10">
+                <MudField Label="Name" Variant="Variant.Text"></MudField>
+            </MudItem>
+            <MudItem xs="2" sm="2" md="2">
+                <MudField @bind-Label="model.Quotation.Borrower.FirstName" />
+            </MudItem>
+        </MudGrid> *@
 
-    <MudGrid>
-        <MudItem xs="6" sm="6" md="6">
-            <MudField Label="Mobile" Variant="Variant.Text"></MudField>
-        </MudItem>
-        <MudItem xs="6" sm="6" md="6">
-            <MudField @bind-Value="model.FirstName" />
-        </MudItem>
-    </MudGrid>
+        @* <MudGrid>
+            <MudItem xs="10" sm="10" md="10">
+                <MudField Label="Mobile" Variant="Variant.Text"></MudField>
+            </MudItem>
+            <MudItem xs="2" sm="2" md="2">
+                <MudField @bind-Value="model.Quotation.Borrower.Mobile" />
+            </MudItem>
+        </MudGrid>
 
-    <MudGrid>
-        <MudItem xs="6" sm="6" md="6">
-            <MudField Label="Email" Variant="Variant.Text"></MudField>
-        </MudItem>
-        <MudItem xs="6" sm="6" md="6">
-            <MudField @bind-Value="model.FirstName" Variant="Variant.Text"></MudField>
-        </MudItem>
-    </MudGrid>
+        <MudGrid>
+            <MudItem xs="10" sm="10" md="10">
+                <MudField Label="Email" Variant="Variant.Text"></MudField>
+            </MudItem>
+            <MudItem xs="2" sm="2" md="2">
+                <MudField @bind-Value="model.Quotation.Borrower.Email" Variant="Variant.Text"></MudField>
+            </MudItem>
+        </MudGrid> *@
+    </div>
 
-    <h6>Finance Details</h6>
+    <div class="d-flex flex-column align-items-center gap-2 mb-5">
+        <h6>Finance Details</h6>
 
-    <MudGrid>
-        <MudItem xs="6" sm="6" md="6">
-            <MudField Label="Finance amount" Variant="Variant.Text"></MudField>
-        </MudItem>
-        <MudItem xs="6" sm="6" md="6">
-            <MudField Label="$1,000" Variant="Variant.Text"></MudField>
-        </MudItem>
-    </MudGrid>
+        <MudGrid>
+            <MudItem xs="10" sm="10" md="10">
+                <MudField Label="Finance amount" Variant="Variant.Text"></MudField>
+            </MudItem>
+            <MudItem xs="2" sm="2" md="2">
+                <MudField Label="$1,000" Variant="Variant.Text"></MudField>
+            </MudItem>
+        </MudGrid>
 
-    <MudGrid>
-        <MudItem xs="6" sm="6" md="6">
-            <MudField Label="Repayments from" Variant="Variant.Text"></MudField>
-        </MudItem>
-        <MudItem xs="6" sm="6" md="6">
-            <MudField Label="$1,000" Variant="Variant.Text"></MudField>
-        </MudItem>
-    </MudGrid>
+        <MudGrid>
+            <MudItem xs="10" sm="10" md="10">
+                <MudField Label="Repayments from" Variant="Variant.Text"></MudField>
+            </MudItem>
+            <MudItem xs="2" sm="2" md="2">
+                <MudTextField Variant="Variant.Text" @bind-Value="model.FinanceAmount" />
+            </MudItem>
+        </MudGrid>
+    </div>
 
     <div class="d-flex justify-content-center">
         <div class="d-flex flex-column align-items-center gap-3">
@@ -74,13 +80,9 @@
 </EditForm>
 
 @code {
-    QuotationDto? model = new QuotationDto();
-    private bool isLoading;
+    FinanceViewModel? model = new FinanceViewModel();
 
-    // protected override Task OnInitializedAsync()
-    // {
-    //     model = await httpClient.GetFromJsonAsync<QuotationDto>("api/");
-    // }
+    private bool isLoading;
 
     protected override async Task OnInitializedAsync()
     {
@@ -94,7 +96,7 @@
 
         try
         {
-            model = await _httpClient.GetFromJsonAsync<QuotationDto>("api/Product/GetProductList");
+            model = await _httpClient.GetFromJsonAsync<FinanceViewModel>("api/Quotation/GetMockQuote");
         }
         catch (Exception ex)
         {

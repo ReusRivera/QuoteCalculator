@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace QuoteCalculator.Domain.Models.Dto
+namespace QuoteCalculator.Domain.Models.ViewModels
 {
-    public class QuotationDto
+    public class QuotationViewModel2
     {
         [Required]
-        public int AmountRequired { get; set; } = 1;
+        public decimal AmountRequired { get; set; } = 1;
 
         [Required]
         public int Term { get; set; }
@@ -35,13 +35,15 @@ namespace QuoteCalculator.Domain.Models.Dto
         [Required]
         public ProductModel Product { get; set; }
 
+        public BorrowerViewModel? Borrower { get; set; }
+
         public string? RepaymentSchedule { get; set; } = "Monthly";
     }
 
-    public class QuotationDtoSample
+    public class QuotationViewModel
     {
         //[Required]
-        public int AmountRequired { get; set; } = 1;
+        public decimal AmountRequired { get; set; } = 1;
 
         //[Required]
         public int Term { get; set; }
@@ -68,7 +70,7 @@ namespace QuoteCalculator.Domain.Models.Dto
         [EmailAddress]
         public string Email { get; set; }
 
-        //[Required]
+        [Required]
         public ProductModel Product { get; set; }
 
         public string? RepaymentSchedule { get; set; } = "Monthly";

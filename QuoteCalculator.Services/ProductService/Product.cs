@@ -61,5 +61,37 @@ namespace QuoteCalculator.Services.ProductService
             return await _context.Product
                 .ToListAsync();
         }
+
+        // Mock Product list for research and scientific purposes.
+        public async Task<List<ProductModel>?> GetAllMockProductList()
+        {
+            return await Task.FromResult(new List<ProductModel>
+            {
+                new() {
+                    Id = Guid.NewGuid(),
+                    Title = "Product A",
+                    Interest = 5.5m,
+                    DateCreated = DateTime.UtcNow,
+                    DateModified = DateTime.UtcNow,
+                    IsActive = true
+                },
+                new() {
+                    Id = Guid.NewGuid(),
+                    Title = "Product B",
+                    Interest = 4.8m,
+                    DateCreated = DateTime.UtcNow,
+                    DateModified = DateTime.UtcNow,
+                    IsActive = true
+                },
+                new() {
+                    Id = Guid.NewGuid(),
+                    Title = "Product C",
+                    Interest = 6.2m,
+                    DateCreated = DateTime.UtcNow,
+                    DateModified = DateTime.UtcNow,
+                    IsActive = false
+                }
+            });
+        }
     }
 }

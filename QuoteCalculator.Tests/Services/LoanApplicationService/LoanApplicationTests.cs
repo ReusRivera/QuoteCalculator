@@ -1,7 +1,7 @@
 ﻿using FakeItEasy;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using QuoteCalculator.Domain.Models.Dto;
+using QuoteCalculator.Domain.Models;
 using QuoteCalculator.Infrastructure.Data;
 using QuoteCalculator.Services.EmailService;
 using QuoteCalculator.Services.LoanApplicationService;
@@ -30,10 +30,10 @@ namespace QuoteCalculator.Tests.Services.LoanApplicationService
         public async Task IsApplicantEligible_Return_True()
         {
             // Arrange
-            var quotationDto = A.Fake<QuotationDto>();
+            var borrower = A.Fake<BorrowerModel>();
 
             // Act
-            var result = await _loanApplicationService.IsApplicantEligible(quotationDto);
+            var result = await _loanApplicationService.IsApplicantEligible(borrower);
 
             // Assert
             result.Should().BeTrue();

@@ -2,8 +2,8 @@
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using QuoteCalculator.Domain.Models;
 using QuoteCalculator.Domain.Models.Dto;
+using QuoteCalculator.Domain.Models.ViewModels;
 using QuoteCalculator.Infrastructure.Data;
 using QuoteCalculator.Services.BorrowerService;
 using QuoteCalculator.Services.FinanceService;
@@ -35,7 +35,7 @@ namespace QuoteCalculator.Tests.Services.QuotationService
         }
 
         [Fact]
-        public async Task CreateQuotation_Return_QuotationModel()
+        public async Task CreateQuotation_Return_QuotationViewModel()
         {
             // Arrange
             var quotationDto = A.Fake<QuotationDto>();
@@ -45,7 +45,7 @@ namespace QuoteCalculator.Tests.Services.QuotationService
 
             // Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType<QuotationModel>();
+            result.Should().BeOfType<QuotationViewModel>();
         }
     }
 }

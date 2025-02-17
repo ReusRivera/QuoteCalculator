@@ -30,6 +30,14 @@ namespace QuoteCalculator.WebApi.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetMockProductList() // Mock Product list for research and scientific purposes.
+        {
+            var productList = await _product.GetAllMockProductList();
+
+            return Ok(productList);
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddProduct([FromBody] ProductDto model)
         {

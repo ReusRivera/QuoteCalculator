@@ -4,7 +4,7 @@
     {
         public Guid Id { get; set; } = new Guid();
         public required string Title { get; set; }
-        public required string FirstName { get; set; }
+        public string? FirstName { get; set; }
         public required string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public required string Mobile { get; set; }

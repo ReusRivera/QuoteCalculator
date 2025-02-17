@@ -75,5 +75,50 @@ namespace QuoteCalculator.Services.FinanceService
 
             return Math.Round(monthlyRepayment, 2);
         }
+
+        // Mock FinanceModel for research and scientific purposes.
+        public FinanceModel CreateMockFinance()
+        {
+            return new FinanceModel
+            {
+                Id = Guid.NewGuid(),
+                FinanceAmount = 50000m,
+                RepaymentSchedule = "Monthly",
+                Quotation = new QuotationModel
+                {
+                    Id = Guid.NewGuid(),
+                    AmountRequired = 50000,
+                    Term = 12,
+                    Borrower = new BorrowerModel
+                    {
+                        Id = Guid.NewGuid(),
+                        Title = "Mr.",
+                        FirstName = "John",
+                        LastName = "Doe",
+                        DateOfBirth = new DateTime(1990, 5, 15),
+                        Mobile = "1234567890",
+                        Email = "johndoe@example.com",
+                        DateCreated = DateTime.UtcNow,
+                        DateModified = DateTime.UtcNow,
+                        IsActive = true
+                    },
+                    DateCreated = DateTime.UtcNow,
+                    DateModified = DateTime.UtcNow,
+                    IsActive = true
+                },
+                Product = new ProductModel
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Product A",
+                    Interest = 5.5m,
+                    DateCreated = DateTime.UtcNow,
+                    DateModified = DateTime.UtcNow,
+                    IsActive = true
+                },
+                DateCreated = DateTime.UtcNow,
+                DateModified = DateTime.UtcNow,
+                IsActive = true
+            };
+        }
     }
 }

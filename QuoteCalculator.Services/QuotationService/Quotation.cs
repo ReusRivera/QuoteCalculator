@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using QuoteCalculator.Domain.Models;
 using QuoteCalculator.Domain.Models.Dto;
+using QuoteCalculator.Domain.Models.ViewModels;
 using QuoteCalculator.Infrastructure.Data;
 using QuoteCalculator.Services.BorrowerService;
 using QuoteCalculator.Services.FinanceService;
@@ -30,7 +31,7 @@ namespace QuoteCalculator.Services.QuotationService
             return result.Entity;
         }
 
-        public async Task<QuotationModel?> CreateQuotation(QuotationDto model)
+        public async Task<QuotationDto?> CreateQuotation(QuotationDto model)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -63,7 +64,7 @@ namespace QuoteCalculator.Services.QuotationService
 
                 await transaction.CommitAsync();
 
-                return quotation;
+                return _mapper.Map<QuotationDto>(quotation);
             }
             catch (Exception ex)
             {
@@ -74,14 +75,14 @@ namespace QuoteCalculator.Services.QuotationService
             }
         }
 
-        public async Task<QuotationModel?> UpdateQuotation(QuotationDto model)
+        public async Task<QuotationViewModel?> UpdateQuotation(QuotationViewModel viewModel)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
-                var quotationMap = _mapper.Map<QuotationModel>(model);
-                var borrowerMap = _mapper.Map<BorrowerModel>(model);
+                var quotationMap = _mapper.Map<QuotationModel>(viewModel);
+                var borrowerMap = _mapper.Map<BorrowerModel>(viewModel);
 
                 var borrower = await _borrower.ValidateNewBorrower(borrowerMap);
 
@@ -107,7 +108,7 @@ namespace QuoteCalculator.Services.QuotationService
 
                 await transaction.CommitAsync();
 
-                return quotation;
+                return _mapper.Map<QuotationViewModel>(quotation);
             }
             catch (Exception ex)
             {
@@ -118,14 +119,14 @@ namespace QuoteCalculator.Services.QuotationService
             }
         }
 
-        public async Task<FinanceModel?> CalculateQuotation(QuotationDto model)
+        public async Task<FinanceViewModel?> CalculateQuotation(QuotationViewModel viewModel)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
-                var quotationMap = _mapper.Map<QuotationModel>(model);
-                var borrowerMap = _mapper.Map<BorrowerModel>(model);
+                var quotationMap = _mapper.Map<QuotationModel>(viewModel);
+                var borrowerMap = _mapper.Map<BorrowerModel>(viewModel);
 
                 var borrower = await _borrower.ValidateNewBorrower(borrowerMap);
 
@@ -149,7 +150,7 @@ namespace QuoteCalculator.Services.QuotationService
                     return null;
                 }
 
-                var finance = await _finance.CreateFinance(quotation, model.Product);
+                var finance = await _finance.CreateFinance(quotation, viewModel.Product);
 
                 if (finance == null)
                 {
@@ -161,7 +162,7 @@ namespace QuoteCalculator.Services.QuotationService
 
                 await transaction.CommitAsync();
 
-                return finance;
+                return _mapper.Map<FinanceViewModel>(finance);
             }
             catch (Exception ex)
             {
@@ -170,6 +171,14 @@ namespace QuoteCalculator.Services.QuotationService
 
                 return null;
             }
+        }
+
+        // Mock CalculateMockQuotation method for research and scientific purposes.
+        public async Task<FinanceViewModel?> CalculateMockQuotation(QuotationViewModel viewModel)
+        {
+            var finance = _finance.CreateMockFinance();
+
+            return _mapper.Map<FinanceViewModel>(finance);
         }
     }
 }
