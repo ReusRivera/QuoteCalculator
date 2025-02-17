@@ -10,74 +10,104 @@
 
 <h3>Your Quote</h3>
 
-<EditForm Model="@model" OnValidSubmit="Submit_LoanApplication">
-    <DataAnnotationsValidator />
+@if (model == null || model.Quotation == null || model.Quotation.Borrower == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <EditForm FormName="Form_LoanApplication" Model="@model" OnValidSubmit="Submit_LoanApplication">
+        <DataAnnotationsValidator />
+        <div class="d-flex flex-column align-items-center gap-2 mt-12 mb-5">
+            <MudGrid>
+                <MudItem xs="11" sm="11" md="11">
+                    <h6>Your Information</h6>
+                </MudItem>
+                <MudItem xs="1" sm="1" md="1">
+                    <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small">Edit</MudButton>
+                </MudItem>
+            </MudGrid>
 
-    <div class="d-flex flex-column align-items-center gap-2 mb-5">
-        <h6>Your Information</h6>
+            <MudGrid>
+                <MudItem xs="10" sm="10" md="10">
+                    <MudField Label="First Name" Variant="Variant.Text"></MudField>
+                </MudItem>
+                <MudItem xs="2" sm="2" md="2">
+                    <MudTextField @bind-Value="model.Quotation.Borrower.FirstName" />
+                </MudItem>
+            </MudGrid>
 
-        @* <MudGrid>
-            <MudItem xs="10" sm="10" md="10">
-                <MudField Label="Name" Variant="Variant.Text"></MudField>
-            </MudItem>
-            <MudItem xs="2" sm="2" md="2">
-                <MudField @bind-Label="model.Quotation.Borrower.FirstName" />
-            </MudItem>
-        </MudGrid> *@
+            <MudGrid>
+                <MudItem xs="10" sm="10" md="10">
+                    <MudField Label="Last Name" Variant="Variant.Text"></MudField>
+                </MudItem>
+                <MudItem xs="2" sm="2" md="2">
+                    <MudTextField @bind-Value="model.Quotation.Borrower.LastName" />
+                </MudItem>
+            </MudGrid>
 
-        @* <MudGrid>
-            <MudItem xs="10" sm="10" md="10">
-                <MudField Label="Mobile" Variant="Variant.Text"></MudField>
-            </MudItem>
-            <MudItem xs="2" sm="2" md="2">
-                <MudField @bind-Value="model.Quotation.Borrower.Mobile" />
-            </MudItem>
-        </MudGrid>
+            <MudGrid>
+                <MudItem xs="10" sm="10" md="10">
+                    <MudField Label="Mobile" Variant="Variant.Text"></MudField>
+                </MudItem>
+                <MudItem xs="2" sm="2" md="2">
+                    <MudTextField @bind-Value="model.Quotation.Borrower.Mobile" />
+                </MudItem>
+            </MudGrid>
 
-        <MudGrid>
-            <MudItem xs="10" sm="10" md="10">
-                <MudField Label="Email" Variant="Variant.Text"></MudField>
-            </MudItem>
-            <MudItem xs="2" sm="2" md="2">
-                <MudField @bind-Value="model.Quotation.Borrower.Email" Variant="Variant.Text"></MudField>
-            </MudItem>
-        </MudGrid> *@
-    </div>
-
-    <div class="d-flex flex-column align-items-center gap-2 mb-5">
-        <h6>Finance Details</h6>
-
-        <MudGrid>
-            <MudItem xs="10" sm="10" md="10">
-                <MudField Label="Finance amount" Variant="Variant.Text"></MudField>
-            </MudItem>
-            <MudItem xs="2" sm="2" md="2">
-                <MudField Label="$1,000" Variant="Variant.Text"></MudField>
-            </MudItem>
-        </MudGrid>
-
-        <MudGrid>
-            <MudItem xs="10" sm="10" md="10">
-                <MudField Label="Repayments from" Variant="Variant.Text"></MudField>
-            </MudItem>
-            <MudItem xs="2" sm="2" md="2">
-                <MudTextField Variant="Variant.Text" @bind-Value="model.FinanceAmount" />
-            </MudItem>
-        </MudGrid>
-    </div>
-
-    <div class="d-flex justify-content-center">
-        <div class="d-flex flex-column align-items-center gap-3">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">Apply Now</MudButton>
-            <p class="text-muted small text-center">
-                Total repayments $1,000, made up of an establishment fee of $1,000,<br>
-                interest of $1,000. The repayment amount is based on the variables<br>
-                selected, is subject to our assessment and suitability, and other important<br>
-                terms and conditions apply.
-            </p>
+            <MudGrid>
+                <MudItem xs="10" sm="10" md="10">
+                    <MudField Label="Email" Variant="Variant.Text"></MudField>
+                </MudItem>
+                <MudItem xs="2" sm="2" md="2">
+                    <MudTextField Variant="Variant.Text" @bind-Value="model.Quotation.Borrower.Email"></MudTextField>
+                </MudItem>
+            </MudGrid>
         </div>
-    </div>
-</EditForm>
+
+        <div class="d-flex flex-column align-items-center gap-2 mt-5 mb-5">
+            <MudGrid>
+                <MudItem xs="11" sm="11" md="11">
+                    <h6>Finance Details</h6>
+                </MudItem>
+                <MudItem xs="1" sm="1" md="1">
+                    <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small">Edit</MudButton>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid>
+                <MudItem xs="10" sm="10" md="10">
+                    <MudField Label="Finance amount" Variant="Variant.Text"></MudField>
+                </MudItem>
+                <MudItem xs="2" sm="2" md="2">
+                    @* <MudField Label="$1,000,000.00" Variant="Variant.Text"></MudField> *@
+                    <MudTextField Variant="Variant.Text" @bind-Value="model.FinanceAmount" />
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid>
+                <MudItem xs="10" sm="10" md="10">
+                    <MudField Label="Repayments from" Variant="Variant.Text"></MudField>
+                </MudItem>
+                <MudItem xs="2" sm="2" md="2">
+                    <MudTextField Variant="Variant.Text" @bind-Value="model.FinanceAmount" />
+                </MudItem>
+            </MudGrid>
+        </div>
+
+        <div class="d-flex justify-content-center mt-12">
+            <div class="d-flex flex-column align-items-center gap-3">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">Apply Now</MudButton>
+                <p class="text-muted small text-center">
+                    Total repayments $1,000, made up of an establishment fee of $1,000,<br>
+                    interest of $1,000. The repayment amount is based on the variables<br>
+                    selected, is subject to our assessment and suitability, and other important<br>
+                    terms and conditions apply.
+                </p>
+            </div>
+        </div>
+    </EditForm>
+}
 
 @code {
     FinanceViewModel? model = new FinanceViewModel();

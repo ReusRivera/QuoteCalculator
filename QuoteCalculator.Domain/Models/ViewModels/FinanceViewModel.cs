@@ -5,8 +5,8 @@
         public Guid Id { get; set; }
         public decimal FinanceAmount { get; set; }
         public string? RepaymentSchedule { get; set; }
-        public QuotationModel? Quotation { get; set; } = new QuotationModel();
-        public ProductModel? Product { get; set; } = new ProductModel();
+        public QuotationModel? Quotation { get; set; }
+        public ProductModel? Product { get; set; }
 
         public string? Name { get; set; }
         public string? Mobile { get; set; }
