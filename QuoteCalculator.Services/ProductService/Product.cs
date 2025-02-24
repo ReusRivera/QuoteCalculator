@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using QuoteCalculator.Domain.Models;
 using QuoteCalculator.Domain.Models.Dto;
 using QuoteCalculator.Infrastructure.Data;
@@ -9,11 +10,13 @@ namespace QuoteCalculator.Services.ProductService
     public class Product : IProduct
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<Product> _logger;
         private readonly IMapper _mapper;
 
-        public Product(ApplicationDbContext context, IMapper mapper)
+        public Product(ApplicationDbContext context, ILogger<Product> logger, IMapper mapper)
         {
             _context = context;
+            _logger = logger;
             _mapper = mapper;
         }
 
@@ -37,7 +40,7 @@ namespace QuoteCalculator.Services.ProductService
 
                 if (product == null)
                 {
-                    //_logger.LogError("CreateProduct: Failed to create product.");
+                    _logger.LogError("CreateProduct: Failed to create product.");
                     await transaction.RollbackAsync();
 
                     return null;
@@ -49,7 +52,7 @@ namespace QuoteCalculator.Services.ProductService
             }
             catch (Exception ex)
             {
-                //_logger.LogError(ex, "CreateProduct: An error occurred while creating product.");
+                _logger.LogError(ex, "CreateProduct: An error occurred while creating product.");
                 await transaction.RollbackAsync();
 
                 return null;
@@ -69,7 +72,7 @@ namespace QuoteCalculator.Services.ProductService
             {
                 new() {
                     Id = Guid.NewGuid(),
-                    Title = "Product A",
+                    Title = "Mock Product A",
                     Interest = 5.5m,
                     DateCreated = DateTime.UtcNow,
                     DateModified = DateTime.UtcNow,
@@ -77,7 +80,7 @@ namespace QuoteCalculator.Services.ProductService
                 },
                 new() {
                     Id = Guid.NewGuid(),
-                    Title = "Product B",
+                    Title = "Mock Product B",
                     Interest = 4.8m,
                     DateCreated = DateTime.UtcNow,
                     DateModified = DateTime.UtcNow,
@@ -85,7 +88,7 @@ namespace QuoteCalculator.Services.ProductService
                 },
                 new() {
                     Id = Guid.NewGuid(),
-                    Title = "Product C",
+                    Title = "Mock Product C",
                     Interest = 6.2m,
                     DateCreated = DateTime.UtcNow,
                     DateModified = DateTime.UtcNow,

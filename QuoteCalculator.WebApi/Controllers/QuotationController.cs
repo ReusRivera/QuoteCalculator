@@ -53,7 +53,7 @@ namespace QuoteCalculator.WebApi.Controllers
 
             var model = new QuotationViewModel();
 
-            var quotation = await _quotation.CalculateMockQuotation(model);
+            var quotation = await _quotation.CalculateQuotationMock(model);
 
             if (quotation == null)
                 return StatusCode(500, "An error occurred while processing the request.");
@@ -67,7 +67,7 @@ namespace QuoteCalculator.WebApi.Controllers
             if (model == null)
                 return BadRequest("Invalid quotation data.");
 
-            var quotation = await _quotation.CalculateMockQuotation(model);
+            var quotation = await _quotation.CalculateQuotationMock(model);
 
             if (quotation == null)
                 return StatusCode(500, "An error occurred while processing the request.");

@@ -17,6 +17,14 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceServices(configuration);
 
+//builder.Logging.AddConsole();
+//builder.Logging.AddDebug();
+
+//builder.Host.UseSerilog((context, config) =>
+//{
+//    config.WriteTo.File("logs/quoteCalculator.txt");
+//});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

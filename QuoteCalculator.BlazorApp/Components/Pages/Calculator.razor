@@ -1,6 +1,4 @@
-﻿@using System.Globalization
-@using QuoteCalculator.Domain.Models
-@using QuoteCalculator.Domain.Models.ViewModels
+﻿@using QuoteCalculator.Domain.Models.ViewModels
 
 @page "/calculator"
 
@@ -9,102 +7,41 @@
 
 <PageTitle>Quote Calculator</PageTitle>
 
-<h3>Quote Calculator</h3>
-
-<EditForm FormName="Form_CalculateQuotation" Model="@model" OnValidSubmit="Submit_CalculateQuotation">
-    <DataAnnotationsValidator />
-    <div class="container">
-        <div class="d-flex flex-column align-items-center gap-4 mb-5">
-            @* <ProductDropdown /> *@
-            <MudStack Row="true">
-                <MudSelect Label="Select a product" T="ProductModel" @bind-Value="model.Product">
-                    @foreach (var product in productList ?? new List<ProductModel>())
-                    {
-                        <MudSelectItem T="ProductModel" Value="@product">@product.Title</MudSelectItem>
-                    }
-                </MudSelect>
-
-                @if (isLoading)
-                {
-                    <MudProgressCircular Indeterminate="true" />
-                }
-            </MudStack>
-        </div>
-
-        <div class="d-flex flex-column align-items-center gap-4 mb-5">
-            <MudSlider T="decimal" Size="Size.Large" @bind-Value="@model.AmountRequired" Min="100" Max="1000" ValueLabel="true" ValueLabelFormat="₱ 0.00">How much do you need?</MudSlider>
-            <MudSlider Size="Size.Large" @bind-Value="@model.Term" Min="1" Max="60" ValueLabel="true">Term</MudSlider>
-        </div>
-
-        <div class="d-flex justify-content-center mb-5">
-            @* <BorrowerDetails /> *@
-            <div class="container">
-                <div class="d-flex justify-content-center gap-3 mb-6">
-                    <MudSelect Label="Title" Class="w-25" T="string" Placeholder="Mr./Mrs." @bind-Value="model.Title" For="@(() => model.Title)">
-                        <MudSelectItem T="string" Value="@("Mr.")">Mr.</MudSelectItem>
-                        <MudSelectItem T="string" Value="@("Mrs.")">Mrs.</MudSelectItem>
-                    </MudSelect>
-                    <MudTextField Variant="Variant.Text" Class="w-25" Label="First Name" @bind-Value="model.FirstName" For="@(() => model.FirstName)"></MudTextField>
-                    <MudTextField Variant="Variant.Text" Class="w-25" Label="Last Name" @bind-Value="model.LastName" For="@(() => model.LastName)"></MudTextField>
-                </div>
-
-                <div class="d-flex justify-content-center gap-3 mb-6">
-                    @* <MudDatePicker Class="w-25" Label="Date Of Birth" @bind-Date="dateOfBirthPlaceholder" For="@(() => model.DateOfBirth)"/> *@
-                    <MudDatePicker Class="w-25" Label="Date Of Birth" For="@(() => model.DateOfBirth)" />
-                    <MudTextField Variant="Variant.Text" Class="w-25" Label="Your email" @bind-Value="model.Email" For="@(() => model.Email)"></MudTextField>
-                    <MudTextField Variant="Variant.Text" Class="w-25" Label="Mobile number" @bind-Value="model.Mobile" For="@(() => model.Mobile)"></MudTextField>
-                </div>
-            </div>
-        </div>
-
-        <div class="d-flex justify-content-center">
-            <div class="d-flex flex-column align-items-center gap-3">
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">Calculate Quote</MudButton>
-                <p class="text-muted small">This quote does not affect your credit score.</p>
-            </div>
-        </div>
+<div class="container">
+    <div class="d-flex justify-content-center">
+        <h3>Quote Calculator</h3>
     </div>
-</EditForm>
+
+    <EditForm FormName="Form_CalculateQuotation" Model="@model" OnValidSubmit="Submit_CalculateQuotation">
+        <DataAnnotationsValidator />
+        <div class="container">
+            <div class="d-flex flex-column align-items-center gap-4 mb-5">
+                <ProductDropdown model="model" />
+            </div>
+
+            <div class="d-flex flex-column align-items-center gap-4 mb-5">
+                <MudSlider T="decimal" Size="Size.Large" @bind-Value="@model.AmountRequired" Min="100" Max="1000" ValueLabel="true" ValueLabelFormat="₱ 0.00">How much do you need?</MudSlider>
+                <MudSlider Size="Size.Large" @bind-Value="@model.Term" Min="1" Max="60" ValueLabel="true">Term</MudSlider>
+            </div>
+
+            <div class="d-flex justify-content-center mb-5">
+                <BorrowerDetails model="model" />
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <div class="d-flex flex-column align-items-center gap-3">
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">Calculate Quote</MudButton>
+                    <p class="text-muted small">This quote does not affect your credit score.</p>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+</div>
 
 @code {
-    // public DateTime? dateOfBirthPlaceholder = DateTime.Today.AddYears(-18);
     private bool isSuccess = false;
 
-    private List<ProductModel>? productList = new();
-    private bool isLoading;
-
     QuotationViewModel model = new QuotationViewModel();
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadProductListItems();
-    }
-
-    private async Task LoadProductListItems()
-    {
-        isLoading = true;
-        StateHasChanged();
-
-        try
-        {
-            // productList = await _httpClient.GetFromJsonAsync<List<ProductModel>>("https://localhost:7238/api/Product/GetProductList");
-            productList = await _httpClient.GetFromJsonAsync<List<ProductModel>>("api/Product/GetProductList");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error fetching productList: {ex.Message}");
-        }
-        finally
-        {
-            if (!productList.Any()) // Mock Product list for research and scientific purposes.
-            {
-                productList = await _httpClient.GetFromJsonAsync<List<ProductModel>>("api/Product/GetMockProductList");
-            }
-
-            isLoading = false;
-            StateHasChanged();
-        }
-    }
 
     private async Task Submit_CalculateQuotation(EditContext context)
     {

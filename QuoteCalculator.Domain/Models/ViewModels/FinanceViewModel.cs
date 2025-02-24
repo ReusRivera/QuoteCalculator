@@ -11,5 +11,9 @@
         public string? Name { get; set; }
         public string? Mobile { get; set; }
         public string? Email { get; set; }
+
+        public decimal TotalRepayment { get; set; }
+        public decimal EstablishmentFee { get; set; } = 300.00M;
+        public decimal Interest { get; set; }
     }
 }

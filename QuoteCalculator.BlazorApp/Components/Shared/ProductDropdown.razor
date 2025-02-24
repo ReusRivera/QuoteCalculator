@@ -1,9 +1,10 @@
 ﻿@using QuoteCalculator.Domain.Models
+@using QuoteCalculator.Domain.Models.ViewModels
 
 @inject HttpClient _httpClient
 
 <MudStack Row="true">
-    <MudSelect Label="Select a product" T="ProductModel" @bind-Value="selectedProduct">
+    <MudSelect Label="Select a product" T="ProductModel" @bind-Value="model.Product">
         @foreach (var product in productList ?? new List<ProductModel>())
         {
             <MudSelectItem T="ProductModel" Value="@product">@product.Title</MudSelectItem>
@@ -19,13 +20,14 @@
 @* <MudButton OnClick="LoadProductListItems" Variant="Variant.Filled">Load Items</MudButton> *@
 @* <MudButton OnClick="async () => await LoadProductListItems()" Variant="Variant.Filled">Load Items</MudButton> *@
 
-@* <p>Selected: @selectedProduct.Id</p> *@
-@* <p>Selected: @selectedProduct.Title</p> *@
+@* <p>Selected: @model.Product.Id</p> *@
 
 @code {
-    private List<ProductModel>? productList = new();
-    private ProductModel? selectedProduct;
+    [Parameter]
+    public QuotationViewModel model { get; set; } = new();
+
     private bool isLoading;
+    private List<ProductModel>? productList = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,6 +50,11 @@
         }
         finally
         {
+            if (!productList.Any()) // Mock Product list for research and scientific purposes.
+            {
+                productList = await _httpClient.GetFromJsonAsync<List<ProductModel>>("api/Product/GetMockProductList");
+            }
+
             isLoading = false;
             StateHasChanged();
         }

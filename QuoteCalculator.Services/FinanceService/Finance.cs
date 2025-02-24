@@ -1,4 +1,5 @@
-﻿using QuoteCalculator.Domain.Models;
+﻿using Microsoft.Extensions.Logging;
+using QuoteCalculator.Domain.Models;
 using QuoteCalculator.Infrastructure.Data;
 
 namespace QuoteCalculator.Services.FinanceService
@@ -6,10 +7,12 @@ namespace QuoteCalculator.Services.FinanceService
     public class Finance : IFinance
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<Finance> _logger;
 
-        public Finance(ApplicationDbContext context)
+        public Finance(ApplicationDbContext context, ILogger<Finance> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         private async Task<FinanceModel> AddFinance(FinanceModel finance)
@@ -46,7 +49,7 @@ namespace QuoteCalculator.Services.FinanceService
 
                 if (finance == null)
                 {
-                    //_logger.LogError("CreateFinance: Failed to create finance.");
+                    _logger.LogError("CreateFinance: Failed to create finance.");
                     await transaction.RollbackAsync();
 
                     return null;
@@ -58,7 +61,7 @@ namespace QuoteCalculator.Services.FinanceService
             }
             catch (Exception ex)
             {
-                //_logger.LogError(ex, "CreateFinance: An error occurred while creating finance.");
+                _logger.LogError(ex, "CreateFinance: An error occurred while creating finance.");
                 await transaction.RollbackAsync();
 
                 return null;
@@ -77,7 +80,7 @@ namespace QuoteCalculator.Services.FinanceService
         }
 
         // Mock FinanceModel for research and scientific purposes.
-        public FinanceModel CreateMockFinance()
+        public FinanceModel CreateFinanceMock()
         {
             return new FinanceModel
             {

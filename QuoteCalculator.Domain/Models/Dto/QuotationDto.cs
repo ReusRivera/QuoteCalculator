@@ -5,7 +5,7 @@ namespace QuoteCalculator.Domain.Models.Dto
     public class QuotationDto
     {
         [Required]
-        public int AmountRequired { get; set; } = 1;
+        public decimal AmountRequired { get; set; } = 1;
 
         [Required]
         public int Term { get; set; }
@@ -41,7 +41,7 @@ namespace QuoteCalculator.Domain.Models.Dto
     public class QuotationDtoSample
     {
         //[Required]
-        public int AmountRequired { get; set; } = 1;
+        public decimal AmountRequired { get; set; } = 1;
 
         //[Required]
         public int Term { get; set; }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using QuoteCalculator.Domain.Models;
 using QuoteCalculator.Domain.Models.Dto;
 using QuoteCalculator.Domain.Models.ViewModels;
@@ -11,13 +12,15 @@ namespace QuoteCalculator.Services.QuotationService
     public class Quotation : IQuotation
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<Quotation> _logger;
         private readonly IMapper _mapper;
         private readonly IBorrower _borrower;
         private readonly IFinance _finance;
 
-        public Quotation(ApplicationDbContext context, IMapper mapper, IBorrower borrower, IFinance finance)
+        public Quotation(ApplicationDbContext context, ILogger<Quotation> logger, IMapper mapper, IBorrower borrower, IFinance finance)
         {
             _context = context;
+            _logger = logger;
             _mapper = mapper;
             _borrower = borrower;
             _finance = finance;
@@ -44,7 +47,7 @@ namespace QuoteCalculator.Services.QuotationService
 
                 if (borrower == null)
                 {
-                    //_logger.LogError("CreateQuotation: Failed to create borrower.");
+                    _logger.LogError("CreateQuotation: Failed to create borrower.");
                     await transaction.RollbackAsync();
 
                     return null;
@@ -56,7 +59,7 @@ namespace QuoteCalculator.Services.QuotationService
 
                 if (quotation == null)
                 {
-                    //_logger.LogError("CreateQuotation: Failed to create quotation.");
+                    _logger.LogError("CreateQuotation: Failed to create quotation.");
                     await transaction.RollbackAsync();
 
                     return null;
@@ -68,7 +71,7 @@ namespace QuoteCalculator.Services.QuotationService
             }
             catch (Exception ex)
             {
-                //_logger.LogError(ex, "CreateQuotation: An error occurred while creating quotation.");
+                _logger.LogError(ex, "CreateQuotation: An error occurred while creating quotation.");
                 await transaction.RollbackAsync();
 
                 return null;
@@ -88,7 +91,7 @@ namespace QuoteCalculator.Services.QuotationService
 
                 if (borrower == null)
                 {
-                    //_logger.LogError("UpdateQuotation: Failed to create borrower.");
+                    _logger.LogError("UpdateQuotation: Failed to create borrower.");
                     await transaction.RollbackAsync();
 
                     return null;
@@ -100,7 +103,7 @@ namespace QuoteCalculator.Services.QuotationService
 
                 if (quotation == null)
                 {
-                    //_logger.LogError("UpdateQuotation: Failed to create quotation.");
+                    _logger.LogError("UpdateQuotation: Failed to create quotation.");
                     await transaction.RollbackAsync();
 
                     return null;
@@ -112,7 +115,7 @@ namespace QuoteCalculator.Services.QuotationService
             }
             catch (Exception ex)
             {
-                //_logger.LogError(ex, "UpdateQuotation: An error occurred while creating quotation.");
+                _logger.LogError(ex, "UpdateQuotation: An error occurred while creating quotation.");
                 await transaction.RollbackAsync();
 
                 return null;
@@ -132,7 +135,7 @@ namespace QuoteCalculator.Services.QuotationService
 
                 if (borrower == null)
                 {
-                    //_logger.LogError("CalculateQuotation: Failed to create borrower.");
+                    _logger.LogError("CalculateQuotation: Failed to create borrower.");
                     await transaction.RollbackAsync();
 
                     return null;
@@ -144,7 +147,7 @@ namespace QuoteCalculator.Services.QuotationService
 
                 if (quotation == null)
                 {
-                    //_logger.LogError("CalculateQuotation: Failed to create quotation.");
+                    _logger.LogError("CalculateQuotation: Failed to create quotation.");
                     await transaction.RollbackAsync();
 
                     return null;
@@ -154,7 +157,7 @@ namespace QuoteCalculator.Services.QuotationService
 
                 if (finance == null)
                 {
-                    //_logger.LogError("CalculateQuotation: Failed to create finance.");
+                    _logger.LogError("CalculateQuotation: Failed to create finance.");
                     await transaction.RollbackAsync();
 
                     return null;
@@ -166,17 +169,17 @@ namespace QuoteCalculator.Services.QuotationService
             }
             catch (Exception ex)
             {
-                //_logger.LogError(ex, "CalculateQuotation: An error occurred while creating quotation.");
+                _logger.LogError(ex, "CalculateQuotation: An error occurred while creating quotation.");
                 await transaction.RollbackAsync();
 
                 return null;
             }
         }
 
-        // Mock CalculateMockQuotation method for research and scientific purposes.
-        public async Task<FinanceViewModel?> CalculateMockQuotation(QuotationViewModel viewModel)
+        // Mock CalculateQuotationMock method for research and scientific purposes.
+        public async Task<FinanceViewModel?> CalculateQuotationMock(QuotationViewModel viewModel)
         {
-            var finance = _finance.CreateMockFinance();
+            var finance = _finance.CreateFinanceMock();
 
             return _mapper.Map<FinanceViewModel>(finance);
         }

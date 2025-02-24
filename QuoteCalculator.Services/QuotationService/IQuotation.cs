@@ -7,6 +7,6 @@ namespace QuoteCalculator.Services.QuotationService
     {
         Task<QuotationDto?> CreateQuotation(QuotationDto model);
         Task<FinanceViewModel?> CalculateQuotation(QuotationViewModel viewModel);
-        Task<FinanceViewModel?> CalculateMockQuotation(QuotationViewModel viewModel);
+        Task<FinanceViewModel?> CalculateQuotationMock(QuotationViewModel viewModel);
     }
 }
