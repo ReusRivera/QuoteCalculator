@@ -1,94 +1,31 @@
 ﻿@page "/test"
 
-@rendermode InteractiveServer
-
-@* <MudSelect T="int" Label="Product" @bind-Value="selectedProduct">
-    <MudSelectItem T="int" Value="1">Product 1</MudSelectItem>
-    <MudSelectItem T="int" Value="2">Product 2</MudSelectItem>
-</MudSelect>
-
-<MudSelect T="string" Label="US States" MultiSelection="true" @bind-Value="_value" @bind-SelectedValues="_options">
-    @foreach (var state in _states)
-    {
-        <MudSelectItem T="string" Value="@state">@state</MudSelectItem>
-    }
-</MudSelect>
-
-<p>Selected: @selectedProduct</p>
-
-@code {
-    private int selectedProduct;
-
-    private string _value = "Nothing selected";
-    private IEnumerable<string> _options = new HashSet<string> { "Alaska" };
-
-    private readonly string[] _states =
-    [
-    "Alabama", "Alaska", "American Samoa", "Arizona",
-    "Arkansas", "California", "Colorado", "Connecticut",
-    "Delaware", "District of Columbia", "Federated States of Micronesia",
-    "Florida", "Georgia", "Guam", "Hawaii", "Idaho",
-    "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
-    "Louisiana", "Maine", "Marshall Islands", "Maryland",
-    "Massachusetts", "Michigan", "Minnesota", "Mississippi",
-    "Missouri", "Montana", "Nebraska", "Nevada",
-    "New Hampshire", "New Jersey", "New Mexico", "New York",
-    "North Carolina", "North Dakota", "Northern Mariana Islands", "Ohio",
-    "Oklahoma", "Oregon", "Palau", "Pennsylvania", "Puerto Rico",
-    "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
-    "Texas", "Utah", "Vermont", "Virgin Island", "Virginia",
-    "Washington", "West Virginia", "Wisconsin", "Wyoming"
-    ];
-}
-*@
-
-@using System.Globalization
-
-<MudSlider T="decimal" Value="@_value" ValueLabel="true" Step="0.5m" Culture="@_selectedCulture" ValueLabelFormat="@_selectedFormat" />
-
-<MudSelect T="CultureInfo" @bind-Value="_selectedCulture">
-    @foreach (var availableCulture in _availableCultures)
-    {
-        <MudSelectItem T="CultureInfo" Value="@availableCulture">@availableCulture.EnglishName</MudSelectItem>
-    }
-</MudSelect>
-
-<MudSelect T="string" @bind-Value="_selectedFormat">
-    <MudSelectItem Value="@("C")" />
-    <MudSelectItem Value="@("00.00")" />
-    <MudSelectItem Value="@("P1")" />
-</MudSelect>
-
-@code {
-    private decimal _value = 50.0m;
-    private string _selectedFormat = "C";
-    private CultureInfo _selectedCulture = EnglishMoneyCulture;
-
-    private List<CultureInfo> _availableCultures = new()
-    {
-        EnglishMoneyCulture,
-        GermanMoneyCulture,
-    };
-
-    private static CultureInfo EnglishMoneyCulture
-    {
-        get
-        {
-            var culture = (CultureInfo)CultureInfo.GetCultureInfo("en").Clone();
-            culture.NumberFormat.CurrencySymbol = "$";
-
-            return culture;
-        }
-    }
-
-    private static CultureInfo GermanMoneyCulture
-    {
-        get
-        {
-            var culture = (CultureInfo)CultureInfo.GetCultureInfo("de").Clone();
-            culture.NumberFormat.CurrencySymbol = "€";
-
-            return culture;
-        }
-    }
-}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote Card</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex justify-content-center align-items-center vh-100 bg-light">
+    <div class="card shadow p-4" style="width: 350px;">
+        <h2 class="text-center text-secondary">Your quote</h2>
+        <div class="mb-3">
+            <h5>Your information <a href="#" class="text-primary float-end">Edit</a></h5>
+            <p><strong>Name:</strong> Wagtest Wagtest</p>
+            <p><strong>Mobile:</strong> 0477095252</p>
+            <p><strong>Email:</strong> wagtesttest@test.com</p>
+        </div>
+        <div class="mb-3">
+            <h5>Finance details <a href="#" class="text-primary float-end">Edit</a></h5>
+            <p><strong>Finance amount:</strong> <span class="text-primary fw-bold">$5,000</span> over 24 months</p>
+            <p><strong>Repayments from:</strong> <span class="text-primary fw-bold">$56.15</span> Weekly</p>
+        </div>
+        <button class="btn btn-success w-100">Apply now</button>
+        <p class="text-muted mt-3 small text-center">
+            Total repayments $5,839.60, made up of an establishment fee of $300.00, interest of $539.60. The repayment amount is based on the variables selected, is subject to our assessment and suitability, and other important terms and conditions apply.
+        </p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

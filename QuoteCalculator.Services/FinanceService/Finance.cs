@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using QuoteCalculator.Domain.Models;
 using QuoteCalculator.Infrastructure.Data;
 
@@ -28,7 +29,8 @@ namespace QuoteCalculator.Services.FinanceService
             return new FinanceModel()
             {
                 FinanceAmount = financeAmount,
-                RepaymentSchedule = "Monthly",
+                //RepaymentSchedule = "Monthly",
+                RepaymentSchedule = "Weekly",
                 Quotation = quotation,
                 Product = product
             };
@@ -46,14 +48,6 @@ namespace QuoteCalculator.Services.FinanceService
                 var model = CreateFinanceModel(quotation, product, repayment);
 
                 var finance = await AddFinance(model);
-
-                if (finance == null)
-                {
-                    _logger.LogError("CreateFinance: Failed to create finance.");
-                    await transaction.RollbackAsync();
-
-                    return null;
-                }
 
                 await transaction.CommitAsync();
 
@@ -77,6 +71,12 @@ namespace QuoteCalculator.Services.FinanceService
             decimal monthlyRepayment = loanAmount * (monthlyRate / (1 - (decimal)Math.Pow(1 + (double)monthlyRate, -monthlyLoanTerms)));
 
             return Math.Round(monthlyRepayment, 2);
+        }
+
+        public async Task<FinanceModel?> GetFinanceById(Guid? financeId)
+        {
+            return await _context.Finance
+                .FirstOrDefaultAsync(f => f.Id == financeId);
         }
 
         // Mock FinanceModel for research and scientific purposes.

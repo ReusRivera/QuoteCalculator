@@ -9,14 +9,14 @@
 
 <div class="container">
     <div class="d-flex justify-content-center">
-        <h3>Quote Calculator</h3>
+        <h3 class="text-center text-secondary">Quote Calculator</h3>
     </div>
 
     <EditForm FormName="Form_CalculateQuotation" Model="@model" OnValidSubmit="Submit_CalculateQuotation">
         <DataAnnotationsValidator />
         <div class="container">
             <div class="d-flex flex-column align-items-center gap-4 mb-5">
-                <ProductDropdown model="model" />
+                <CalculatorProductDropdown model="model" />
             </div>
 
             <div class="d-flex flex-column align-items-center gap-4 mb-5">
@@ -25,7 +25,7 @@
             </div>
 
             <div class="d-flex justify-content-center mb-5">
-                <BorrowerDetails model="model" />
+                <CalculatorBorrowerDetails model="model" />
             </div>
 
             <div class="d-flex justify-content-center">
@@ -43,21 +43,52 @@
 
     QuotationViewModel model = new QuotationViewModel();
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCalculatorDetails();
+    }
+
+    private async Task LoadCalculatorDetails()
+    {
+        // isLoading = true;
+        // StateHasChanged();
+
+        // try
+        // {
+        //     model = await _httpClient.GetFromJsonAsync<FinanceViewModel>("api/Quotation/GetMockQuote");
+        // }
+        // catch (Exception ex)
+        // {
+        //     Console.WriteLine($"Error fetching quotation: {ex.Message}");
+        // }
+        // finally
+        // {
+        //     isLoading = false;
+        //     StateHasChanged();
+        // }
+    }
+
     private async Task Submit_CalculateQuotation(EditContext context)
     {
-        if (!isSuccess)
+        // if (!isSuccess)
+        // {
+        //     // NavigateToQuotationComponent("quotation");
+        // }
+
+        // StateHasChanged();
+
+        var response = await _httpClient.PostAsJsonAsync("api/Quotation/CalculateQuote", model);
+
+        if (response.IsSuccessStatusCode)
         {
-            NavigateToQuotationComponent("quotation");
-        }
+            var result = await response.Content.ReadFromJsonAsync<FinanceViewModel>();
 
-        StateHasChanged();
+            if (result != null)
+            {
+                var financeId = result.Id.ToString();
 
-        // var result = await _httpClient.PostAsJsonAsync("api/Quotation/CalculateQuote", model);
-        var result = await _httpClient.PostAsJsonAsync("api/Quotation/CalculateMockQuote", model);
-
-        if (result.IsSuccessStatusCode)
-        {
-            NavigateToQuotationComponent("Sample");
+                NavigateToQuotationComponent(financeId);
+            }
         }
     }
 

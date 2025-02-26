@@ -41,7 +41,7 @@ namespace QuoteCalculator.Tests.Services.QuotationService
             var quotationDto = A.Fake<QuotationDto>();
 
             // Act
-            var result = await _quotationService.CreateQuotation(quotationDto);
+            var result = await _quotationService.ValidateQuotation(quotationDto);
 
             // Assert
             result.Should().NotBeNull();

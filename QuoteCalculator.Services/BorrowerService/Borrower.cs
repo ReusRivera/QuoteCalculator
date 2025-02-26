@@ -43,7 +43,7 @@ namespace QuoteCalculator.Services.BorrowerService
             return await UpdateBorrower(borrower);
         }
 
-        private async Task<BorrowerModel?> GetExistingBorrowerByDetails(BorrowerModel borrower)
+        private async Task<BorrowerModel?> GetBorrowerByDetails(BorrowerModel borrower)
         {
             return await _context.Borrower
                 .FirstOrDefaultAsync(b =>
@@ -52,9 +52,26 @@ namespace QuoteCalculator.Services.BorrowerService
                     b.DateOfBirth.Date == borrower.DateOfBirth.Date);
         }
 
-        public async Task<BorrowerModel> ValidateNewBorrower(BorrowerModel borrower)
+        public bool IsBorrowerDetailsValid(BorrowerModel borrower)
         {
-            var existingBorrower = await GetExistingBorrowerByDetails(borrower);
+            if (borrower == null)
+                return false;
+
+            if (string.IsNullOrWhiteSpace(borrower.Title) ||
+                string.IsNullOrWhiteSpace(borrower.FirstName) ||
+                string.IsNullOrWhiteSpace(borrower.LastName) ||
+                string.IsNullOrWhiteSpace(borrower.Mobile) ||
+                string.IsNullOrWhiteSpace(borrower.Email))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<BorrowerModel> ValidateBorrower(BorrowerModel borrower)
+        {
+            var existingBorrower = await GetBorrowerByDetails(borrower);
 
             if (existingBorrower == null)
                 return await AddBorrower(borrower);

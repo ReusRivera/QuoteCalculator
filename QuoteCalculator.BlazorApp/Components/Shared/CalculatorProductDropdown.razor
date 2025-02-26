@@ -3,19 +3,21 @@
 
 @inject HttpClient _httpClient
 
-<MudStack Row="true">
-    <MudSelect Label="Select a product" T="ProductModel" @bind-Value="model.Product">
-        @foreach (var product in productList ?? new List<ProductModel>())
-        {
-            <MudSelectItem T="ProductModel" Value="@product">@product.Title</MudSelectItem>
-        }
-    </MudSelect>
-
-    @if (isLoading)
+<MudSelect Label="Select a product" FullWidth="true" T="ProductModel" @bind-Value="model.Product">
+    @foreach (var product in productList ?? new List<ProductModel>())
     {
-        <MudProgressCircular Indeterminate="true" />
+        <MudSelectItem T="ProductModel" Value="@product">@product.Title</MudSelectItem>
     }
-</MudStack>
+</MudSelect>
+
+@if (isLoading)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+
+@* <MudSelect T="string" Label="From Language" @bind-Value="@fromLanguage" Variant="Variant.Filled" Style="min-width: 200px;" FullWidth="true" Dense="true" DisableUnderLine="true" 
+    Class="et-select-input py-8">  
+</MudSelect> *@
 
 @* <MudButton OnClick="LoadProductListItems" Variant="Variant.Filled">Load Items</MudButton> *@
 @* <MudButton OnClick="async () => await LoadProductListItems()" Variant="Variant.Filled">Load Items</MudButton> *@

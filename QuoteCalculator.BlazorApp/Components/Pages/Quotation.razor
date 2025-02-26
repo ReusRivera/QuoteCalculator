@@ -1,7 +1,7 @@
 ﻿@using QuoteCalculator.Domain.Models
 @using QuoteCalculator.Domain.Models.ViewModels
 
-@page "/quotation"
+@page "/quotation/{id}"
 
 @inject HttpClient _httpClient
 @inject NavigationManager _navigation
@@ -10,7 +10,7 @@
 
 <div class="container">
     <div class="d-flex justify-content-center">
-        <h3>Your Quote</h3>
+        <h3 class="text-center text-secondary">Your Quote</h3>
     </div>
 
     @if (model == null || model.Quotation == null || model.Quotation.Borrower == null)
@@ -21,89 +21,15 @@
     {
         <EditForm FormName="Form_LoanApplication" Model="@model" OnValidSubmit="Submit_LoanApplication">
             <DataAnnotationsValidator />
-            <div class="d-flex flex-column align-items-center gap-2 mt-12 mb-5">
-                <MudGrid>
-                    <MudItem xs="11" sm="11" md="11">
-                        <h6>Your Information</h6>
-                    </MudItem>
-                    <MudItem xs="1" sm="1" md="1">
-                        <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small">Edit</MudButton>
-                    </MudItem>
-                </MudGrid>
-
-                <MudGrid>
-                    <MudItem xs="10" sm="10" md="10">
-                        <MudField Label="First Name" Variant="Variant.Text"></MudField>
-                    </MudItem>
-                    <MudItem xs="2" sm="2" md="2">
-                        <MudTextField @bind-Value="model.Quotation.Borrower.FirstName" />
-                    </MudItem>
-                </MudGrid>
-
-                <MudGrid>
-                    <MudItem xs="10" sm="10" md="10">
-                        <MudField Label="Last Name" Variant="Variant.Text"></MudField>
-                    </MudItem>
-                    <MudItem xs="2" sm="2" md="2">
-                        <MudTextField @bind-Value="model.Quotation.Borrower.LastName" />
-                    </MudItem>
-                </MudGrid>
-
-                <MudGrid>
-                    <MudItem xs="10" sm="10" md="10">
-                        <MudField Label="Mobile" Variant="Variant.Text"></MudField>
-                    </MudItem>
-                    <MudItem xs="2" sm="2" md="2">
-                        <MudTextField @bind-Value="model.Quotation.Borrower.Mobile" />
-                    </MudItem>
-                </MudGrid>
-
-                <MudGrid>
-                    <MudItem xs="10" sm="10" md="10">
-                        <MudField Label="Email" Variant="Variant.Text"></MudField>
-                    </MudItem>
-                    <MudItem xs="2" sm="2" md="2">
-                        <MudTextField Variant="Variant.Text" @bind-Value="model.Quotation.Borrower.Email"></MudTextField>
-                    </MudItem>
-                </MudGrid>
-            </div>
-
-            <div class="d-flex flex-column align-items-center gap-2 mt-5 mb-5">
-                <MudGrid>
-                    <MudItem xs="11" sm="11" md="11">
-                        <h6>Finance Details</h6>
-                    </MudItem>
-                    <MudItem xs="1" sm="1" md="1">
-                        <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small">Edit</MudButton>
-                    </MudItem>
-                </MudGrid>
-
-                <MudGrid>
-                    <MudItem xs="10" sm="10" md="10">
-                        <MudField Label="Finance amount" Variant="Variant.Text"></MudField>
-                    </MudItem>
-                    <MudItem xs="2" sm="2" md="2">
-                        @* <MudField Label="$1,000,000.00" Variant="Variant.Text"></MudField> *@
-                        <MudTextField Variant="Variant.Text" @bind-Value="model.FinanceAmount" />
-                    </MudItem>
-                </MudGrid>
-
-                <MudGrid>
-                    <MudItem xs="10" sm="10" md="10">
-                        <MudField Label="Repayments from" Variant="Variant.Text"></MudField>
-                    </MudItem>
-                    <MudItem xs="2" sm="2" md="2">
-                        <MudTextField Variant="Variant.Text" @bind-Value="model.FinanceAmount" />
-                    </MudItem>
-                </MudGrid>
-            </div>
+            <QuotationBorrowerDetails model="model" />
+            <QuotationFinanceDetails model="model" />
 
             <div class="d-flex justify-content-center mt-12">
-                <div class="d-flex flex-column align-items-center gap-3">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">Apply Now</MudButton>
+                <div class="d-flex flex-column align-items-center gap-4">
+                    <MudButton ButtonType="ButtonType.Submit" Class="btn btn-success w-100" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">Apply Now</MudButton>
                     <p class="text-muted small text-center">
-                        Total repayments $1,000, made up of an establishment fee of $1,000,<br>
-                        interest of $1,000. The repayment amount is based on the variables<br>
+                        Total repayments @((model?.TotalRepayment)?.ToString("C")), made up of an establishment fee of @((model?.EstablishmentFee)?.ToString("C")),<br>
+                        interest of @((model?.Interest)?.ToString("C")). The repayment amount is based on the variables<br>
                         selected, is subject to our assessment and suitability, and other important<br>
                         terms and conditions apply.
                     </p>
@@ -114,13 +40,23 @@
 </div>
 
 @code {
+    [Parameter]
+    public Guid Id { get; set; }
+
     FinanceViewModel? model = new FinanceViewModel();
 
     private bool isLoading;
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadQuotationDetails();
+        if (Id == Guid.Empty)
+        {
+            Console.WriteLine("Invalid GUID received.");
+        }
+        else
+        {
+            await LoadQuotationDetails();
+        }
     }
 
     private async Task LoadQuotationDetails()
@@ -130,17 +66,47 @@
 
         try
         {
-            model = await _httpClient.GetFromJsonAsync<FinanceViewModel>("api/Quotation/GetMockQuote");
+            // var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>($"api/Finance/{Id}");
+            var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>($"api/Finance?financeId={Id}");
+
+            if (response != null)
+            {
+                model = response;
+            }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error fetching quotation: {ex.Message}");
+
+            var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>("api/Quotation/GetMockQuote");
+
+            if (response != null)
+            {
+                model = response;
+            }
         }
         finally
         {
             isLoading = false;
             StateHasChanged();
         }
+    }
+
+    private async Task EditQuotationDetails()
+    {
+        try
+        {
+            model = await _httpClient.GetFromJsonAsync<FinanceViewModel>("api/Quotation/GetMockQuote");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching quotation: {ex.Message}");
+        }
+    }
+
+    private void NavigateToQuCalculatorComponent(string redirectUrl)
+    {
+        _navigation.NavigateTo($"calculator/{redirectUrl}");
     }
 
     private void Submit_LoanApplication(EditContext context)

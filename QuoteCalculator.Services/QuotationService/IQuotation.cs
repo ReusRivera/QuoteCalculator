@@ -1,12 +1,11 @@
-﻿using QuoteCalculator.Domain.Models.Dto;
-using QuoteCalculator.Domain.Models.ViewModels;
+﻿using QuoteCalculator.Domain.Models;
 
 namespace QuoteCalculator.Services.QuotationService
 {
     public interface IQuotation
     {
-        Task<QuotationDto?> CreateQuotation(QuotationDto model);
-        Task<FinanceViewModel?> CalculateQuotation(QuotationViewModel viewModel);
-        Task<FinanceViewModel?> CalculateQuotationMock(QuotationViewModel viewModel);
+        bool IsQuotationValid(QuotationModel quotation);
+        Task<QuotationModel?> ValidateQuotation(QuotationModel quotation);
+        //Task<QuotationModel?> VerifyQuotation(QuotationModel quotation);
     }
 }

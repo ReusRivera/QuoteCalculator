@@ -24,5 +24,7 @@ public class MappingProfile : Profile
 
         CreateMap<FinanceModel, FinanceViewModel>();
         CreateMap<FinanceViewModel, FinanceModel>();
+
+        CreateMap<FinanceViewModel, QuotationModel>();
     }
 }

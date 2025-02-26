@@ -5,6 +5,8 @@ namespace QuoteCalculator.Services.FinanceService
     public interface IFinance
     {
         Task<FinanceModel?> CreateFinance(QuotationModel quotation, ProductModel product);
+        Task<FinanceModel?> GetFinanceById(Guid? financeId);
+
         FinanceModel CreateFinanceMock();
     }
 }

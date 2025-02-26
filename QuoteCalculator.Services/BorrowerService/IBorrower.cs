@@ -4,6 +4,7 @@ namespace QuoteCalculator.Services.BorrowerService
 {
     public interface IBorrower
     {
-        Task<BorrowerModel> ValidateNewBorrower(BorrowerModel borrower);
+        bool IsBorrowerDetailsValid(BorrowerModel borrower);
+        Task<BorrowerModel> ValidateBorrower(BorrowerModel borrower);
     }
 }

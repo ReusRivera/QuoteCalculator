@@ -36,7 +36,7 @@ namespace QuoteCalculator.Tests.Services.BorrowerService
             };
 
             // Act
-            var result = await _borrowerService.ValidateNewBorrower(borrower);
+            var result = await _borrowerService.ValidateBorrower(borrower);
 
             // Assert
             result.Should().NotBeNull();

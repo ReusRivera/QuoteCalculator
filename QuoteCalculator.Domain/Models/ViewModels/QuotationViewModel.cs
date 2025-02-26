@@ -2,7 +2,7 @@
 
 namespace QuoteCalculator.Domain.Models.ViewModels
 {
-    public class QuotationViewModel2
+    public class QuotationViewModel3
     {
         [Required]
         public decimal AmountRequired { get; set; } = 1;
@@ -11,26 +11,26 @@ namespace QuoteCalculator.Domain.Models.ViewModels
         public int Term { get; set; }
 
         [Required]
-        [StringLength(10, ErrorMessage = "Title length can't be more than 10.")]
-        public string Title { get; set; }
+        [StringLength(5, ErrorMessage = "Title length can't be more than 10.")]
+        public string? Title { get; set; }
 
         [Required]
         [StringLength(20, ErrorMessage = "First Name length can't be more than 20.")]
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         [Required]
         [StringLength(20, ErrorMessage = "Last Name length can't be more than 20.")]
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
         [Required]
         public DateTime? DateOfBirth { get; set; }
 
         [Required]
-        public string Mobile { get; set; }
+        public string? Mobile { get; set; }
 
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [Required]
         public ProductModel Product { get; set; }
@@ -48,27 +48,27 @@ namespace QuoteCalculator.Domain.Models.ViewModels
         //[Required]
         public int Term { get; set; }
 
-        //[Required]
-        [StringLength(10, ErrorMessage = "Title length can't be more than 10.")]
-        public string Title { get; set; }
+        [Required]
+        [StringLength(5, ErrorMessage = "Title length can't be more than 10.")]
+        public string? Title { get; set; }
 
         //[Required]
         [StringLength(20, ErrorMessage = "First Name length can't be more than 20.")]
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         //[Required]
         [StringLength(20, ErrorMessage = "Last Name length can't be more than 20.")]
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
         //[Required]
         public DateTime? DateOfBirth { get; set; }
 
         //[Required]
-        public string Mobile { get; set; }
+        public string? Mobile { get; set; }
 
         //[Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [Required]
         public ProductModel Product { get; set; }

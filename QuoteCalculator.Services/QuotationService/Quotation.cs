@@ -1,11 +1,8 @@
-﻿using AutoMapper;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QuoteCalculator.Domain.Models;
-using QuoteCalculator.Domain.Models.Dto;
-using QuoteCalculator.Domain.Models.ViewModels;
 using QuoteCalculator.Infrastructure.Data;
 using QuoteCalculator.Services.BorrowerService;
-using QuoteCalculator.Services.FinanceService;
 
 namespace QuoteCalculator.Services.QuotationService
 {
@@ -13,17 +10,13 @@ namespace QuoteCalculator.Services.QuotationService
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<Quotation> _logger;
-        private readonly IMapper _mapper;
         private readonly IBorrower _borrower;
-        private readonly IFinance _finance;
 
-        public Quotation(ApplicationDbContext context, ILogger<Quotation> logger, IMapper mapper, IBorrower borrower, IFinance finance)
+        public Quotation(ApplicationDbContext context, ILogger<Quotation> logger, IBorrower borrower)
         {
             _context = context;
             _logger = logger;
-            _mapper = mapper;
             _borrower = borrower;
-            _finance = finance;
         }
 
         private async Task<QuotationModel> AddQuotation(QuotationModel quotation)
@@ -34,154 +27,77 @@ namespace QuoteCalculator.Services.QuotationService
             return result.Entity;
         }
 
-        public async Task<QuotationDto?> CreateQuotation(QuotationDto model)
+        private async Task<QuotationModel> UpdateQuotation(QuotationModel quotation)
         {
+            var result = _context.Quotation.Update(quotation);
+            await _context.SaveChangesAsync();
+
+            return result.Entity;
+        }
+
+        private async Task<QuotationModel?> GetQuotationByDetails(QuotationModel quotation)
+        {
+            return await _context.Quotation
+                .FirstOrDefaultAsync(q =>
+                    q.Id == quotation.Id ||
+                    q.AmountRequired == quotation.AmountRequired &&
+                    q.Term == quotation.Term);
+        }
+
+        public bool IsQuotationValid(QuotationModel quotation)
+        {
+            if (quotation == null)
+                return false;
+
+            if (quotation.AmountRequired <= 0 || quotation.Term <= 0)
+                return false;
+
+            if (quotation.Borrower == null || !_borrower.IsBorrowerDetailsValid(quotation.Borrower))
+                return false;
+
+            return true;
+        }
+
+        public async Task<QuotationModel?> ValidateQuotation(QuotationModel quotation)
+        {
+            var existingQuotation = await GetQuotationByDetails(quotation);
+
             using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
-                var quotationMap = _mapper.Map<QuotationModel>(model);
-                var borrowerMap = _mapper.Map<BorrowerModel>(model);
+                quotation.Borrower = await _borrower.ValidateBorrower(quotation.Borrower);
 
-                var borrower = await _borrower.ValidateNewBorrower(borrowerMap);
-
-                if (borrower == null)
-                {
-                    _logger.LogError("CreateQuotation: Failed to create borrower.");
-                    await transaction.RollbackAsync();
-
-                    return null;
-                }
-
-                quotationMap.Borrower = borrower;
-
-                var quotation = await AddQuotation(quotationMap);
-
-                if (quotation == null)
-                {
-                    _logger.LogError("CreateQuotation: Failed to create quotation.");
-                    await transaction.RollbackAsync();
-
-                    return null;
-                }
+                if (existingQuotation == null)
+                    quotation = await AddQuotation(quotation);
+                else
+                    quotation = existingQuotation;
 
                 await transaction.CommitAsync();
 
-                return _mapper.Map<QuotationDto>(quotation);
+                return quotation;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "CreateQuotation: An error occurred while creating quotation.");
+                _logger.LogError(ex, "ValidateQuotation: An error occurred while creating quotation.");
                 await transaction.RollbackAsync();
 
                 return null;
             }
         }
 
-        public async Task<QuotationViewModel?> UpdateQuotation(QuotationViewModel viewModel)
-        {
-            using var transaction = await _context.Database.BeginTransactionAsync();
+        //public async Task<QuotationModel?> VerifyQuotation(QuotationModel quotation)
+        //{
+        //    var quotationResult = await GetQuotationByDetails(quotation);
 
-            try
-            {
-                var quotationMap = _mapper.Map<QuotationModel>(viewModel);
-                var borrowerMap = _mapper.Map<BorrowerModel>(viewModel);
+        //    if (quotationResult == null)
+        //    {
+        //        _logger.LogWarning("UpdateQuotation: An error occurred while updating quotation. Either Quotation or Borrower doesn't exists!");
 
-                var borrower = await _borrower.ValidateNewBorrower(borrowerMap);
+        //        return null;
+        //    }
 
-                if (borrower == null)
-                {
-                    _logger.LogError("UpdateQuotation: Failed to create borrower.");
-                    await transaction.RollbackAsync();
-
-                    return null;
-                }
-
-                quotationMap.Borrower = borrower;
-
-                var quotation = await AddQuotation(quotationMap);
-
-                if (quotation == null)
-                {
-                    _logger.LogError("UpdateQuotation: Failed to create quotation.");
-                    await transaction.RollbackAsync();
-
-                    return null;
-                }
-
-                await transaction.CommitAsync();
-
-                return _mapper.Map<QuotationViewModel>(quotation);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "UpdateQuotation: An error occurred while creating quotation.");
-                await transaction.RollbackAsync();
-
-                return null;
-            }
-        }
-
-        public async Task<FinanceViewModel?> CalculateQuotation(QuotationViewModel viewModel)
-        {
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
-            try
-            {
-                var quotationMap = _mapper.Map<QuotationModel>(viewModel);
-                var borrowerMap = _mapper.Map<BorrowerModel>(viewModel);
-
-                var borrower = await _borrower.ValidateNewBorrower(borrowerMap);
-
-                if (borrower == null)
-                {
-                    _logger.LogError("CalculateQuotation: Failed to create borrower.");
-                    await transaction.RollbackAsync();
-
-                    return null;
-                }
-
-                quotationMap.Borrower = borrower;
-
-                var quotation = await AddQuotation(quotationMap);
-
-                if (quotation == null)
-                {
-                    _logger.LogError("CalculateQuotation: Failed to create quotation.");
-                    await transaction.RollbackAsync();
-
-                    return null;
-                }
-
-                var finance = await _finance.CreateFinance(quotation, viewModel.Product);
-
-                if (finance == null)
-                {
-                    _logger.LogError("CalculateQuotation: Failed to create finance.");
-                    await transaction.RollbackAsync();
-
-                    return null;
-                }
-
-                await transaction.CommitAsync();
-
-                return _mapper.Map<FinanceViewModel>(finance);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "CalculateQuotation: An error occurred while creating quotation.");
-                await transaction.RollbackAsync();
-
-                return null;
-            }
-        }
-
-        // Mock CalculateQuotationMock method for research and scientific purposes.
-        public async Task<FinanceViewModel?> CalculateQuotationMock(QuotationViewModel viewModel)
-        {
-            var finance = _finance.CreateFinanceMock();
-
-            return _mapper.Map<FinanceViewModel>(finance);
-        }
+        //    return quotationResult;
+        //}
     }
 }
