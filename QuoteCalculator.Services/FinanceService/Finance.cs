@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using QuoteCalculator.Domain.Models;
 using QuoteCalculator.Infrastructure.Data;
+using QuoteCalculator.Services.ProductService;
 
 namespace QuoteCalculator.Services.FinanceService
 {
@@ -9,11 +10,13 @@ namespace QuoteCalculator.Services.FinanceService
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<Finance> _logger;
+        private readonly IProduct _product;
 
-        public Finance(ApplicationDbContext context, ILogger<Finance> logger)
+        public Finance(ApplicationDbContext context, ILogger<Finance> logger, IProduct product)
         {
             _context = context;
             _logger = logger;
+            _product = product;
         }
 
         private async Task<FinanceModel> AddFinance(FinanceModel finance)
@@ -24,34 +27,54 @@ namespace QuoteCalculator.Services.FinanceService
             return result.Entity;
         }
 
-        private static FinanceModel CreateFinanceModel(QuotationModel quotation, ProductModel product, decimal financeAmount)
+        public bool IsFinanceValid(FinanceModel finance)
         {
-            return new FinanceModel()
-            {
-                FinanceAmount = financeAmount,
-                //RepaymentSchedule = "Monthly",
-                RepaymentSchedule = "Weekly",
-                Quotation = quotation,
-                Product = product
-            };
+            if (finance == null)
+                return false;
+
+            if (finance.Quotation == null || finance.Product == null)
+                return false;
+
+            if (string.IsNullOrWhiteSpace(finance.RepaymentSchedule))
+                return false;
+
+            return true;
         }
 
-        public async Task<FinanceModel?> CreateFinance(QuotationModel quotation, ProductModel product)
+        private async Task ValidateFinanceProduct(FinanceModel finance)
         {
+            var product = await _product.GetProductById(finance.Product);
+
+            if (product == null)
+            {
+                string message = "Product doesn't exists.";
+
+                _logger.LogWarning($"ValidateFinanceProduct: {message}");
+
+                throw new ArgumentException(message);
+            }
+
+            finance.Product = product;
+        }
+
+        public async Task<FinanceModel?> CreateFinance(FinanceModel finance)
+        {
+            await ValidateFinanceProduct(finance);
+
+            var quotation = finance.Quotation;
+            var product = finance.Product;
+
             using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
-                decimal decimalAmount = quotation.AmountRequired;
+                finance.FinanceAmount = CalculateRepayment(quotation.AmountRequired, product.Interest, quotation.Term, finance.RepaymentSchedule);
 
-                var repayment = CalculateMonthlyRepayment(decimalAmount, product.Interest, quotation.Term);
-                var model = CreateFinanceModel(quotation, product, repayment);
-
-                var finance = await AddFinance(model);
+                var financeResult = await AddFinance(finance);
 
                 await transaction.CommitAsync();
-
-                return finance;
+                 
+                return financeResult;
             }
             catch (Exception ex)
             {
@@ -62,15 +85,27 @@ namespace QuoteCalculator.Services.FinanceService
             }
         }
 
-        public decimal CalculateMonthlyRepayment(decimal loanAmount, decimal annualInterestRate, int monthlyLoanTerms)
+        public decimal CalculateRepayment(decimal loanAmount, decimal annualInterestRate, int loanTerms, string repaymentSchedule)
         {
+            int periodsPerYear = DetermineRepaymentSchedule(repaymentSchedule);
+
             if (annualInterestRate == 0)
-                return loanAmount / monthlyLoanTerms;
+                return Math.Round(loanAmount / loanTerms, 2);
 
-            decimal monthlyRate = annualInterestRate / 100 / 12;
-            decimal monthlyRepayment = loanAmount * (monthlyRate / (1 - (decimal)Math.Pow(1 + (double)monthlyRate, -monthlyLoanTerms)));
+            decimal periodicRate = annualInterestRate / 100 / periodsPerYear;
+            decimal repayment = loanAmount * (periodicRate / (1 - (decimal)Math.Pow(1 + (double)periodicRate, -loanTerms)));
 
-            return Math.Round(monthlyRepayment, 2);
+            return Math.Round(repayment, 2);
+        }
+
+        private static int DetermineRepaymentSchedule(string repaymentSchedule)
+        {
+            return repaymentSchedule.ToLower() switch
+            {
+                "weekly" => 52,
+                "monthly" => 12,
+                _ => throw new ArgumentException("Invalid frequency. Use 'weekly' or 'monthly'."),
+            };
         }
 
         public async Task<FinanceModel?> GetFinanceById(Guid? financeId)
@@ -86,7 +121,7 @@ namespace QuoteCalculator.Services.FinanceService
             {
                 Id = Guid.NewGuid(),
                 FinanceAmount = 50000m,
-                RepaymentSchedule = "Monthly",
+                RepaymentSchedule = "Weekly",
                 Quotation = new QuotationModel
                 {
                     Id = Guid.NewGuid(),

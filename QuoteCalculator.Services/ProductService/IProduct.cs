@@ -7,6 +7,8 @@ namespace QuoteCalculator.Services.ProductService
     {
         Task<ProductModel?> CreateProduct(ProductDto model);
         Task<List<ProductModel>?> GetAllProductList();
+        Task<ProductModel?> GetProductById(ProductModel product);
+
         Task<List<ProductModel>?> GetAllMockProductList();
     }
 }

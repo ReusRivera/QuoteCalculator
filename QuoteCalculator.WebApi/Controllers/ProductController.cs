@@ -41,8 +41,8 @@ namespace QuoteCalculator.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProduct([FromBody] ProductDto model)
         {
-            //if (model == null)
-            //    return BadRequest("Invalid quotation data.");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             //var quotation = await _quotation.ValidateQuotation(model);
 

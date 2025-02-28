@@ -37,7 +37,7 @@ namespace QuoteCalculator.Domain.Models.ViewModels
 
         public BorrowerViewModel? Borrower { get; set; }
 
-        public string? RepaymentSchedule { get; set; } = "Monthly";
+        public string? RepaymentSchedule { get; set; } = "Weekly";
     }
 
     public class QuotationViewModel
@@ -73,6 +73,6 @@ namespace QuoteCalculator.Domain.Models.ViewModels
         [Required]
         public ProductModel Product { get; set; }
 
-        public string? RepaymentSchedule { get; set; } = "Monthly";
+        public string? RepaymentSchedule { get; set; } = "Weekly";
     }
 }

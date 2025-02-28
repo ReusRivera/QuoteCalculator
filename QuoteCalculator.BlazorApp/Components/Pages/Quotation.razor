@@ -1,8 +1,9 @@
 ﻿@using QuoteCalculator.Domain.Models
 @using QuoteCalculator.Domain.Models.ViewModels
 
-@page "/quotation/{id}"
+@page "/quotation/{Id:guid}"
 
+@inject ISnackbar _snackBar
 @inject HttpClient _httpClient
 @inject NavigationManager _navigation
 
@@ -10,7 +11,7 @@
 
 <div class="container">
     <div class="d-flex justify-content-center">
-        <h3 class="text-center text-secondary">Your Quote</h3>
+        <h3 class="text-center text-secondary mb-5">Your Quote</h3>
     </div>
 
     @if (model == null || model.Quotation == null || model.Quotation.Borrower == null)
@@ -26,7 +27,7 @@
 
             <div class="d-flex justify-content-center mt-12">
                 <div class="d-flex flex-column align-items-center gap-4">
-                    <MudButton ButtonType="ButtonType.Submit" Class="btn btn-success w-100" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">Apply Now</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Class="btn btn-success w-100" Variant="Variant.Filled" Color="Color.Success" Size="Size.Large">Apply Now</MudButton>
                     <p class="text-muted small text-center">
                         Total repayments @((model?.TotalRepayment)?.ToString("C")), made up of an establishment fee of @((model?.EstablishmentFee)?.ToString("C")),<br>
                         interest of @((model?.Interest)?.ToString("C")). The repayment amount is based on the variables<br>
@@ -67,23 +68,31 @@
         try
         {
             // var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>($"api/Finance/{Id}");
-            var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>($"api/Finance?financeId={Id}");
+            var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>($"api/Finance/GetFinance?financeId={Id}");
 
             if (response != null)
             {
                 model = response;
             }
         }
+        // catch (Exception ex)
+        // {
+        //     Console.WriteLine($"Error fetching quotation: {ex.Message}");
+
+        //     var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>("api/Quotation/GetMockQuote");
+
+        //     if (response != null)
+        //     {
+        //         model = response;
+        //     }
+        // }
         catch (Exception ex)
         {
             Console.WriteLine($"Error fetching quotation: {ex.Message}");
 
-            var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>("api/Quotation/GetMockQuote");
+            _snackBar.Add("Failed to fetch quotation.", Severity.Error);
 
-            if (response != null)
-            {
-                model = response;
-            }
+            NavigateToHome();
         }
         finally
         {
@@ -100,18 +109,23 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error fetching quotation: {ex.Message}");
-        }
-    }
+            Console.WriteLine($"Error editing quotation: {ex.Message}");
 
-    private void NavigateToQuCalculatorComponent(string redirectUrl)
-    {
-        _navigation.NavigateTo($"calculator/{redirectUrl}");
+            _snackBar.Add("Failed to edit quotation.", Severity.Error);
+
+            StateHasChanged();
+        }
     }
 
     private void Submit_LoanApplication(EditContext context)
     {
         // success = true;
-        StateHasChanged();
+        NavigateToSuccess();
     }
+
+    private void NavigateToHome() => _navigation.NavigateTo("/");
+
+    private void NavigateToCalculator(string redirectUrl) => _navigation.NavigateTo($"calculator/{redirectUrl}");
+
+    private void NavigateToSuccess() => _navigation.NavigateTo("/success");
 }

@@ -32,13 +32,12 @@ namespace QuoteCalculator.Domain.Models.Dto
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
-        public ProductModel Product { get; set; }
+        public ProductModel? Product { get; set; }
 
-        public string? RepaymentSchedule { get; set; } = "Monthly";
+        public string? RepaymentSchedule { get; set; } = "Weekly";
     }
 
-    public class QuotationDtoSample
+    public class QuotationDtoTesting
     {
         //[Required]
         public decimal AmountRequired { get; set; } = 1;
@@ -69,8 +68,8 @@ namespace QuoteCalculator.Domain.Models.Dto
         public string Email { get; set; }
 
         //[Required]
-        public ProductModel Product { get; set; }
+        public ProductModel? Product { get; set; }
 
-        public string? RepaymentSchedule { get; set; } = "Monthly";
+        public string? RepaymentSchedule { get; set; } = "Weekly";
     }
 }

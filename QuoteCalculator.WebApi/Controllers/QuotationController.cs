@@ -24,13 +24,12 @@ namespace QuoteCalculator.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateQuote([FromBody] QuotationDto viewModel)
+        public async Task<IActionResult> CreateQuote([FromBody] QuotationDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var quotationMap = _mapper.Map<QuotationModel>(viewModel);
-            quotationMap.Borrower = _mapper.Map<BorrowerModel>(viewModel);
+            var quotationMap = _mapper.Map<QuotationModel>(model);
 
             if (!_quotation.IsQuotationValid(quotationMap))
                 return BadRequest("Quotation details are invalid.");
@@ -52,7 +51,6 @@ namespace QuoteCalculator.WebApi.Controllers
                 return BadRequest(ModelState);
 
             var quotationMap = _mapper.Map<QuotationModel>(viewModel);
-            quotationMap.Borrower = _mapper.Map<BorrowerModel>(viewModel);
 
             if (!_quotation.IsQuotationValid(quotationMap))
                 return BadRequest("Quotation details are invalid.");
@@ -62,7 +60,12 @@ namespace QuoteCalculator.WebApi.Controllers
             if (quotation == null)
                 return NotFound("Quotation record not found.");
 
-            var finance = await _finance.CreateFinance(quotation, viewModel.Product);
+            var financeMap = _mapper.Map<FinanceModel>(viewModel);
+
+            if (!_finance.IsFinanceValid(financeMap))
+                return BadRequest("Finance details are invalid.");
+
+            var finance = await _finance.CreateFinance(financeMap);
 
             if (finance == null)
                 return NotFound("Finance record not found.");

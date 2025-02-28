@@ -35,6 +35,13 @@ namespace QuoteCalculator.Services.QuotationService
             return result.Entity;
         }
 
+        private async Task<QuotationModel> UpdateQuotationDetails(QuotationModel quotation)
+        {
+            quotation.DateModified = DateTime.UtcNow;
+
+            return await UpdateQuotation(quotation);
+        }
+
         private async Task<QuotationModel?> GetQuotationByDetails(QuotationModel quotation)
         {
             return await _context.Quotation
@@ -60,18 +67,23 @@ namespace QuoteCalculator.Services.QuotationService
 
         public async Task<QuotationModel?> ValidateQuotation(QuotationModel quotation)
         {
-            var existingQuotation = await GetQuotationByDetails(quotation);
-
             using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
-                quotation.Borrower = await _borrower.ValidateBorrower(quotation.Borrower);
+                var existingQuotation = await GetQuotationByDetails(quotation);
+                var borrower = await _borrower.ValidateBorrower(quotation.Borrower);
 
                 if (existingQuotation == null)
+                {
+                    quotation.Borrower = borrower;
                     quotation = await AddQuotation(quotation);
+                }
                 else
-                    quotation = existingQuotation;
+                {
+                    existingQuotation.Borrower = borrower;
+                    quotation = await UpdateQuotationDetails(existingQuotation);
+                } 
 
                 await transaction.CommitAsync();
 

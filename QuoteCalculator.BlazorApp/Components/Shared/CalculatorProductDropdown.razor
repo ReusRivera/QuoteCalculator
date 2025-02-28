@@ -10,13 +10,17 @@
     }
 </MudSelect>
 
+@* <MudText Color="Color.Error" Style="font-size: 0.9rem;" Class="mt-1" Hidden="@(model.Product != null)">
+    * Please select a product.
+</MudText> *@
+
 @if (isLoading)
 {
     <MudProgressCircular Indeterminate="true" />
 }
 
-@* <MudSelect T="string" Label="From Language" @bind-Value="@fromLanguage" Variant="Variant.Filled" Style="min-width: 200px;" FullWidth="true" Dense="true" DisableUnderLine="true" 
-    Class="et-select-input py-8">  
+@* <MudSelect T="string" Label="From Language" @bind-Value="@fromLanguage" Variant="Variant.Filled" Style="min-width: 200px;" FullWidth="true" Dense="true" DisableUnderLine="true"
+    Class="et-select-input py-8">
 </MudSelect> *@
 
 @* <MudButton OnClick="LoadProductListItems" Variant="Variant.Filled">Load Items</MudButton> *@

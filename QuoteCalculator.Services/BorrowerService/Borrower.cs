@@ -29,18 +29,13 @@ namespace QuoteCalculator.Services.BorrowerService
             return result.Entity;
         }
 
-        //private async Task<BorrowerModel> UpdateBorrowerDeails(BorrowerModel existing, BorrowerModel updated)
-        //{
-        //    existing.DateModified = DateTime.UtcNow;
-
-        //    return await UpdateBorrower(borrower);
-        //}
-
-        private async Task<BorrowerModel> UpdateBorrowerDeails(BorrowerModel borrower)
+        private async Task<BorrowerModel> UpdateBorrowerDetails(BorrowerModel existing, BorrowerModel updated)
         {
-            borrower.DateModified = DateTime.UtcNow;
+            existing.Mobile = updated.Mobile;
+            existing.Email = updated.Email;
+            existing.DateModified = DateTime.UtcNow;
 
-            return await UpdateBorrower(borrower);
+            return await UpdateBorrower(existing);
         }
 
         private async Task<BorrowerModel?> GetBorrowerByDetails(BorrowerModel borrower)
@@ -76,7 +71,7 @@ namespace QuoteCalculator.Services.BorrowerService
             if (existingBorrower == null)
                 return await AddBorrower(borrower);
 
-            return await UpdateBorrowerDeails(existingBorrower);
+            return await UpdateBorrowerDetails(existingBorrower, borrower);
         }
     }
 }

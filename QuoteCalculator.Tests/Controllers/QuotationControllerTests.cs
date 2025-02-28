@@ -1,9 +1,11 @@
+using AutoMapper;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using QuoteCalculator.WebApi.Controllers;
 using QuoteCalculator.Domain.Models.Dto;
 using QuoteCalculator.Services.QuotationService;
+using QuoteCalculator.Services.FinanceService;
 
 namespace QuoteCalculator.Tests.Controllers
 {
@@ -14,7 +16,10 @@ namespace QuoteCalculator.Tests.Controllers
         public QuotationControllerTests()
         {
             var quotation = A.Fake<IQuotation>();
-            _quotationController = new QuotationController(quotation);
+            var mapper = A.Fake<IMapper>();
+            var finance = A.Fake<IFinance>();
+
+            _quotationController = new QuotationController(mapper, quotation, finance);
         }
 
         [Fact]

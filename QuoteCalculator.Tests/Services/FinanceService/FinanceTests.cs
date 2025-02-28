@@ -1,7 +1,10 @@
-﻿using FluentAssertions;
+﻿using FakeItEasy;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using QuoteCalculator.Infrastructure.Data;
 using QuoteCalculator.Services.FinanceService;
+using QuoteCalculator.Services.ProductService;
 
 namespace QuoteCalculator.Tests.Services.FinanceService
 {
@@ -17,7 +20,10 @@ namespace QuoteCalculator.Tests.Services.FinanceService
 
             var context = new ApplicationDbContext(options);
 
-            _financeService = new Finance(context);
+            var logger = A.Fake<ILogger<Finance>>();
+            var product = A.Fake<IProduct>();
+
+            _financeService = new Finance(context, logger, product);
         }
 
         [Fact]

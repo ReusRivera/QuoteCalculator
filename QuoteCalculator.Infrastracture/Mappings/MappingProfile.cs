@@ -10,7 +10,9 @@ public class MappingProfile : Profile
         CreateMap<QuotationDto, QuotationModel>();
         CreateMap<QuotationModel, QuotationDto>();
 
-        CreateMap<QuotationViewModel, QuotationModel>();
+        CreateMap<QuotationViewModel, QuotationModel>()
+            .ForMember(dest => dest.Borrower, opt => opt.MapFrom(src => src));
+
         CreateMap<QuotationModel, QuotationViewModel>();
 
         CreateMap<QuotationDto, BorrowerModel>();
@@ -25,6 +27,7 @@ public class MappingProfile : Profile
         CreateMap<FinanceModel, FinanceViewModel>();
         CreateMap<FinanceViewModel, FinanceModel>();
 
-        CreateMap<FinanceViewModel, QuotationModel>();
+        CreateMap<QuotationViewModel, FinanceModel>()
+            .ForMember(dest => dest.Quotation, opt => opt.MapFrom(src => src));
     }
 }

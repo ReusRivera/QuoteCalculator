@@ -4,7 +4,8 @@ namespace QuoteCalculator.Services.FinanceService
 {
     public interface IFinance
     {
-        Task<FinanceModel?> CreateFinance(QuotationModel quotation, ProductModel product);
+        bool IsFinanceValid(FinanceModel finance);
+        Task<FinanceModel?> CreateFinance(FinanceModel finance);
         Task<FinanceModel?> GetFinanceById(Guid? financeId);
 
         FinanceModel CreateFinanceMock();

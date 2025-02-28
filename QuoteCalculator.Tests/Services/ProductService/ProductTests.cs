@@ -3,6 +3,7 @@ using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using QuoteCalculator.Domain.Models;
 using QuoteCalculator.Infrastructure.Data;
 using QuoteCalculator.Services.ProductService;
@@ -22,10 +23,12 @@ namespace QuoteCalculator.Tests.Services.ProductService
                 .Options;
 
             var context = new ApplicationDbContext(options);
+
+            var logger = A.Fake<ILogger<Product>>();
             var mapper = A.Fake<IMapper>();
             var product = A.Fake<IProduct>();
 
-            _productService = new Product(context, mapper);
+            _productService = new Product(context, logger, mapper);
             _productController = new ProductController(product);
         }
 

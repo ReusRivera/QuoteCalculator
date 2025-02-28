@@ -1,12 +1,11 @@
-﻿using AutoMapper;
-using FakeItEasy;
+﻿using FakeItEasy;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using QuoteCalculator.Domain.Models.Dto;
+using Microsoft.Extensions.Logging;
+using QuoteCalculator.Domain.Models;
 using QuoteCalculator.Domain.Models.ViewModels;
 using QuoteCalculator.Infrastructure.Data;
 using QuoteCalculator.Services.BorrowerService;
-using QuoteCalculator.Services.FinanceService;
 using QuoteCalculator.Services.QuotationService;
 
 namespace QuoteCalculator.Tests.Services.QuotationService
@@ -27,21 +26,21 @@ namespace QuoteCalculator.Tests.Services.QuotationService
 
             //var context = new ApplicationDbContext(options1);
             var context = new ApplicationDbContext(options2);
-            var mapper = A.Fake<IMapper>();
-            var borrower = A.Fake<IBorrower>();
-            var finance = A.Fake<IFinance>();
 
-            _quotationService = new Quotation(context, mapper, borrower, finance);
+            var logger = A.Fake<ILogger<Quotation>>();
+            var borrower = A.Fake<IBorrower>();
+
+            _quotationService = new Quotation(context, logger, borrower);
         }
 
         [Fact]
         public async Task CreateQuotation_Return_QuotationViewModel()
         {
             // Arrange
-            var quotationDto = A.Fake<QuotationDto>();
+            var quotation = A.Fake<QuotationModel>();
 
             // Act
-            var result = await _quotationService.ValidateQuotation(quotationDto);
+            var result = await _quotationService.ValidateQuotation(quotation);
 
             // Assert
             result.Should().NotBeNull();

@@ -62,7 +62,14 @@ namespace QuoteCalculator.Services.ProductService
         public async Task<List<ProductModel>?> GetAllProductList()
         {
             return await _context.Product
+                .OrderBy(p => p.Title)
                 .ToListAsync();
+        }
+
+        public async Task<ProductModel?> GetProductById(ProductModel product)
+        {
+            return await _context.Product
+                .FirstOrDefaultAsync(p => p.Id == product.Id);
         }
 
         // Mock Product list for research and scientific purposes.
