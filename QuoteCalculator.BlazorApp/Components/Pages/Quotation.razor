@@ -15,8 +15,11 @@
     </div>
 
     @if (model == null || model.Quotation == null || model.Quotation.Borrower == null)
+    @* @if (isLoading) *@
     {
-        <MudProgressCircular Indeterminate="true" />
+        <div class="d-flex justify-content-center">
+            <MudProgressCircular Indeterminate="true" />
+        </div>
     }
     else
     {
@@ -50,24 +53,16 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (Id == Guid.Empty)
-        {
-            Console.WriteLine("Invalid GUID received.");
-        }
-        else
-        {
-            await LoadQuotationDetails();
-        }
+        await LoadQuotationDetails();
     }
 
     private async Task LoadQuotationDetails()
     {
         isLoading = true;
-        StateHasChanged();
+        // StateHasChanged();
 
         try
         {
-            // var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>($"api/Finance/{Id}");
             var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>($"api/Finance/GetFinance?financeId={Id}");
 
             if (response != null)
@@ -91,13 +86,14 @@
             Console.WriteLine($"Error fetching quotation: {ex.Message}");
 
             _snackBar.Add("Failed to fetch quotation.", Severity.Error);
-
             NavigateToHome();
+
+            return;
         }
         finally
         {
             isLoading = false;
-            StateHasChanged();
+            // StateHasChanged();
         }
     }
 
@@ -113,12 +109,37 @@
 
             _snackBar.Add("Failed to edit quotation.", Severity.Error);
 
-            StateHasChanged();
+            // StateHasChanged();
         }
     }
 
-    private void Submit_LoanApplication(EditContext context)
+    private async Task Submit_LoanApplication(EditContext context)
     {
+        if (!context.Validate())
+        {
+            _snackBar.Add("Please correct validation errors.", Severity.Warning);
+            return;
+        }
+
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/Loan/Apply", model);
+
+            if (response.IsSuccessStatusCode)
+            {
+                NavigateToSuccess();
+            }
+            else
+            {
+                _snackBar.Add("Loan application failed.", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error submitting loan application: {ex.Message}");
+            _snackBar.Add("Unexpected error occurred.", Severity.Error);
+        }
+
         // success = true;
         NavigateToSuccess();
     }
