@@ -1,0 +1,64 @@
+﻿@using QuoteCalculator.Domain.Models.ViewModels
+
+<div class="d-flex flex-column align-items-center gap-4 mt-12 mb-5">
+    <MudGrid>
+        <MudItem xs="11" sm="11" md="11">
+            <h5>Your Information</h5>
+        </MudItem>
+        <MudItem xs="1" sm="1" md="1">
+            <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" OnClick="ToggleBorrowerFieldsDisabled">Edit</MudButton>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid>
+        <MudItem xs="10" sm="10" md="10">
+            @* <MudField Label="First Name" Variant="Variant.Text"></MudField> *@
+            <MudTextField Value="@("First Name")" Disabled="true" />
+        </MudItem>
+        <MudItem xs="2" sm="2" md="2">
+            <MudTextField @bind-Value="model.Quotation.Borrower.FirstName" Disabled="IsBorrowerFieldsDisabled" />
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid>
+        <MudItem xs="10" sm="10" md="10">
+            @* <MudField Label="Last Name" Variant="Variant.Text"></MudField> *@
+            <MudTextField Value="@("Last Name")" Disabled="true" />
+        </MudItem>
+        <MudItem xs="2" sm="2" md="2">
+            <MudTextField @bind-Value="model.Quotation.Borrower.LastName" Disabled="IsBorrowerFieldsDisabled" />
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid>
+        <MudItem xs="10" sm="10" md="10">
+            @* <MudField Label="Mobile" Variant="Variant.Text"></MudField> *@
+            <MudTextField Value="@("Mobile")" Disabled="true" />
+        </MudItem>
+        <MudItem xs="2" sm="2" md="2">
+            <MudTextField @bind-Value="model.Quotation.Borrower.Mobile" Disabled="IsBorrowerFieldsDisabled" />
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid>
+        <MudItem xs="10" sm="10" md="10">
+            @* <MudField Label="Email" Variant="Variant.Text"></MudField> *@
+            <MudTextField Value="@("Email")" Disabled="true" />
+        </MudItem>
+        <MudItem xs="2" sm="2" md="2">
+            <MudTextField Variant="Variant.Text" @bind-Value="model.Quotation.Borrower.Email" Disabled="IsBorrowerFieldsDisabled"></MudTextField>
+        </MudItem>
+    </MudGrid>
+</div>
+
+@code {
+    [Parameter]
+    public FinanceViewModel model { get; set; } = new();
+
+    private bool IsBorrowerFieldsDisabled { get; set; } = true;
+
+    private void ToggleBorrowerFieldsDisabled()
+    {
+        IsBorrowerFieldsDisabled = !IsBorrowerFieldsDisabled;
+    }
+}

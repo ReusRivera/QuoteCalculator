@@ -1,0 +1,152 @@
+﻿@using QuoteCalculator.Domain.Models
+@using QuoteCalculator.Domain.Models.ViewModels
+
+@page "/quotation/{Id:guid}"
+
+@inject ISnackbar _snackBar
+@inject HttpClient _httpClient
+@inject NavigationManager _navigation
+
+<PageTitle>Quotation</PageTitle>
+
+<div class="container">
+    <div class="d-flex justify-content-center">
+        <h3 class="text-center text-secondary mb-5">Your Quote</h3>
+    </div>
+
+    @if (model == null || model.Quotation == null || model.Quotation.Borrower == null)
+    @* @if (isLoading) *@
+    {
+        <div class="d-flex justify-content-center">
+            <MudProgressCircular Indeterminate="true" />
+        </div>
+    }
+    else
+    {
+        <EditForm FormName="Form_LoanApplication" Model="@model" OnValidSubmit="Submit_LoanApplication">
+            <DataAnnotationsValidator />
+            <QuotationBorrowerDetails model="model" />
+            <QuotationFinanceDetails model="model" />
+
+            <div class="d-flex justify-content-center mt-12">
+                <div class="d-flex flex-column align-items-center gap-4">
+                    <MudButton ButtonType="ButtonType.Submit" Class="btn btn-success w-100" Variant="Variant.Filled" Color="Color.Success" Size="Size.Large">Apply Now</MudButton>
+                    <p class="text-muted small text-center">
+                        Total repayments @((model?.TotalRepayment)?.ToString("C")), made up of an establishment fee of @((model?.EstablishmentFee)?.ToString("C")),<br>
+                        interest of @((model?.Interest)?.ToString("C")). The repayment amount is based on the variables<br>
+                        selected, is subject to our assessment and suitability, and other important<br>
+                        terms and conditions apply.
+                    </p>
+                </div>
+            </div>
+        </EditForm>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    FinanceViewModel? model = new FinanceViewModel();
+
+    private bool isLoading;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadQuotationDetails();
+    }
+
+    private async Task LoadQuotationDetails()
+    {
+        isLoading = true;
+        // StateHasChanged();
+
+        try
+        {
+            var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>($"api/Finance/GetFinance?financeId={Id}");
+
+            if (response != null)
+            {
+                model = response;
+            }
+        }
+        // catch (Exception ex)
+        // {
+        //     Console.WriteLine($"Error fetching quotation: {ex.Message}");
+
+        //     var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>("api/Quotation/GetMockQuote");
+
+        //     if (response != null)
+        //     {
+        //         model = response;
+        //     }
+        // }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching quotation: {ex.Message}");
+
+            _snackBar.Add("Failed to fetch quotation.", Severity.Error);
+            NavigateToHome();
+
+            return;
+        }
+        finally
+        {
+            isLoading = false;
+            // StateHasChanged();
+        }
+    }
+
+    private async Task EditQuotationDetails()
+    {
+        try
+        {
+            model = await _httpClient.GetFromJsonAsync<FinanceViewModel>("api/Quotation/GetMockQuote");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error editing quotation: {ex.Message}");
+
+            _snackBar.Add("Failed to edit quotation.", Severity.Error);
+
+            // StateHasChanged();
+        }
+    }
+
+    private async Task Submit_LoanApplication(EditContext context)
+    {
+        if (!context.Validate())
+        {
+            _snackBar.Add("Please correct validation errors.", Severity.Warning);
+            return;
+        }
+
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/Loan/Apply", model);
+
+            if (response.IsSuccessStatusCode)
+            {
+                NavigateToSuccess();
+            }
+            else
+            {
+                _snackBar.Add("Loan application failed.", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error submitting loan application: {ex.Message}");
+            _snackBar.Add("Unexpected error occurred.", Severity.Error);
+        }
+
+        // success = true;
+        NavigateToSuccess();
+    }
+
+    private void NavigateToHome() => _navigation.NavigateTo("/");
+
+    private void NavigateToCalculator(string redirectUrl) => _navigation.NavigateTo($"calculator/{redirectUrl}");
+
+    private void NavigateToSuccess() => _navigation.NavigateTo("/success");
+}

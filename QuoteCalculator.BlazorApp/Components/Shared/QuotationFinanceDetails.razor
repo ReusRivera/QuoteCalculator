@@ -1,0 +1,44 @@
+﻿@using QuoteCalculator.Domain.Models.ViewModels
+
+<div class="d-flex flex-column align-items-center gap-3 mt-5 mb-5">
+    <MudGrid>
+        <MudItem xs="11" sm="11" md="11">
+            <h5>Finance Details</h5>
+        </MudItem>
+        <MudItem xs="1" sm="1" md="1">
+            <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" OnClick="ToggleFinanceFieldsDisabled">Edit</MudButton>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid>
+        <MudItem xs="10" sm="10" md="10">
+            @* <MudField Label="Finance amount" Variant="Variant.Text"></MudField> *@
+            <MudTextField Value="@("Finance amount")" Disabled="true" />
+        </MudItem>
+        <MudItem xs="2" sm="2" md="2">
+            <MudTextField Variant="Variant.Text" @bind-Value="model.FinanceAmount" Disabled="IsFinanceFieldsDisabled" />
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid>
+        <MudItem xs="10" sm="10" md="10">
+            @* <MudField Label="Repayments from" Variant="Variant.Text"></MudField> *@
+            <MudTextField Value="@("Repayments from")" Disabled="true" />
+        </MudItem>
+        <MudItem xs="2" sm="2" md="2">
+            <MudTextField Variant="Variant.Text" @bind-Value="model.FinanceAmount" Disabled="IsFinanceFieldsDisabled" />
+        </MudItem>
+    </MudGrid>
+</div>
+
+@code {
+    [Parameter]
+    public FinanceViewModel model { get; set; } = new();
+
+    private bool IsFinanceFieldsDisabled { get; set; } = true;
+
+    private void ToggleFinanceFieldsDisabled()
+    {
+        IsFinanceFieldsDisabled = !IsFinanceFieldsDisabled;
+    }
+}

@@ -1,0 +1,68 @@
+﻿@using QuoteCalculator.Domain.Models
+@using QuoteCalculator.Domain.Models.ViewModels
+
+@inject HttpClient _httpClient
+
+<MudSelect Label="Select a product" FullWidth="true" T="ProductModel" @bind-Value="model.Product">
+    @foreach (var product in productList ?? new List<ProductModel>())
+    {
+        <MudSelectItem T="ProductModel" Value="@product">@product.Title</MudSelectItem>
+    }
+</MudSelect>
+
+@* <MudText Color="Color.Error" Style="font-size: 0.9rem;" Class="mt-1" Hidden="@(model.Product != null)">
+    * Please select a product.
+</MudText> *@
+
+@if (isLoading)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+
+@* <MudSelect T="string" Label="From Language" @bind-Value="@fromLanguage" Variant="Variant.Filled" Style="min-width: 200px;" FullWidth="true" Dense="true" DisableUnderLine="true"
+    Class="et-select-input py-8">
+</MudSelect> *@
+
+@* <MudButton OnClick="LoadProductListItems" Variant="Variant.Filled">Load Items</MudButton> *@
+@* <MudButton OnClick="async () => await LoadProductListItems()" Variant="Variant.Filled">Load Items</MudButton> *@
+
+@* <p>Selected: @model.Product.Id</p> *@
+
+@code {
+    [Parameter]
+    public QuotationViewModel model { get; set; } = new();
+
+    private bool isLoading;
+    private List<ProductModel>? productList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProductListItems();
+    }
+
+    private async Task LoadProductListItems()
+    {
+        isLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            // productList = await _httpClient.GetFromJsonAsync<List<ProductModel>>("https://localhost:7238/api/Product/GetProductList");
+            productList = await _httpClient.GetFromJsonAsync<List<ProductModel>>("api/Product/GetProductList");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching productList: {ex.Message}");
+        }
+        finally
+        {
+            if (!productList.Any()) // Mock Product list for research and scientific purposes.
+            {
+                productList = await _httpClient.GetFromJsonAsync<List<ProductModel>>("api/Product/GetMockProductList");
+            }
+
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+}

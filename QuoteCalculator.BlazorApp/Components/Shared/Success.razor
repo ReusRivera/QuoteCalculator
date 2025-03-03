@@ -1,0 +1,28 @@
+﻿@page "/success"
+
+@inject NavigationManager _navigation
+
+<PageTitle>Success</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex justify-center align-center" Style="height:100vh">
+    <MudCard Class="pa-4">
+        <MudCardContent>
+            <div class="text-center">
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Size="Size.Large" Color="Color.Success" />
+                <MudText Typo="Typo.h4" Class="mt-3">Submission Successful</MudText>
+                <MudText Typo="Typo.subtitle1" Class="mt-1">
+                    Your application has been successfully received.
+                </MudText>
+            </div>
+        </MudCardContent>
+        <MudCardActions Class="justify-center">
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@NavigateToHome">
+                Return Home
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudContainer>
+
+@code {
+    private void NavigateToHome() => _navigation.NavigateTo("/");
+}

@@ -1,0 +1,29 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using QuoteCalculator.Domain.Models.ViewModels
+
+<div class="container">
+    <div class="d-flex justify-content-center gap-3 mb-6">
+        <MudSelect Label="Title" Class="w-25" T="string" Placeholder="Mr./Mrs." @bind-Value="model.Title" For="@(() => model.Title)">
+            <MudSelectItem T="string" Value="@("Mr.")">Mr.</MudSelectItem>
+            <MudSelectItem T="string" Value="@("Mrs.")">Mrs.</MudSelectItem>
+        </MudSelect>
+        <MudTextField Variant="Variant.Text" Class="w-25" Label="First Name" @bind-Value="model.FirstName" For="@(() => model.FirstName)"></MudTextField>
+        <MudTextField Variant="Variant.Text" Class="w-25" Label="Last Name" @bind-Value="model.LastName" For="@(() => model.LastName)"></MudTextField>
+    </div>
+
+    <div class="d-flex justify-content-center gap-3 mb-6">
+        @* <MudDatePicker Class="w-25" Label="Date Of Birth" @bind-Date="dateOfBirthPlaceholder" For="@(() => model.DateOfBirth)"/> *@
+        @* <MudDatePicker Class="w-25" Label="Date Of Birth" For="@(() => model.DateOfBirth)" /> *@
+        <MudDatePicker Class="w-25" Label="Date Of Birth" @bind-Date="@model.DateOfBirth" />
+        <MudTextField Variant="Variant.Text" Class="w-25" Label="Your email" @bind-Value="model.Email" For="@(() => model.Email)"></MudTextField>
+        <MudTextField Variant="Variant.Text" Class="w-25" Label="Mobile number" @bind-Value="model.Mobile" For="@(() => model.Mobile)"></MudTextField>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public QuotationViewModel model { get; set; } = new();
+
+    bool success;
+    // public DateTime? dateOfBirthPlaceholder = DateTime.Today.AddYears(-18);
+}

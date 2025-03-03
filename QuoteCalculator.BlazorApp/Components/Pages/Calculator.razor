@@ -1,0 +1,110 @@
+﻿@using QuoteCalculator.Domain.Models.ViewModels
+
+@page "/calculator"
+
+@inject ISnackbar _snackBar
+@inject HttpClient _httpClient
+@inject NavigationManager _navigation
+
+<PageTitle>Quote Calculator</PageTitle>
+
+<div class="container">
+    <div class="d-flex justify-content-center">
+        <h3 class="text-center text-secondary mb-5">Quote Calculator</h3>
+    </div>
+
+    <EditForm FormName="Form_CalculateQuotation" Model="@model" OnValidSubmit="Submit_CalculateQuotation">
+        <DataAnnotationsValidator />
+        <div class="container">
+            <div class="d-flex flex-column align-items-center gap-4 mb-5">
+                <CalculatorProductDropdown model="model" />
+            </div>
+
+            <div class="d-flex flex-column align-items-center gap-4 mb-5">
+                <MudSlider T="decimal" Color="Color.Primary" Size="Size.Large" Min="100" Max="1000" ValueLabel="true" ValueLabelFormat="₱ 0.00" @bind-Value="@model.AmountRequired">How much do you need?</MudSlider>
+
+                @* <MudText Color="Color.Error" Style="font-size: 0.9rem;" Class="mt-1" Hidden="@(model.AmountRequired > 100 || !isSubmitted)">
+                    * Please select an amount.
+                </MudText> *@
+
+                <MudSlider Color="Color.Primary" Size="Size.Large" Min="1" Max="60" ValueLabel="true" @bind-Value="@model.Term">Term</MudSlider>
+
+                @* <MudText Color="Color.Error" Style="font-size: 0.9rem;" Class="mt-1" Hidden="@(model.Term > 1 || !isSubmitted)">
+                    * Please select a term.
+                </MudText> *@
+            </div>
+
+            <div class="d-flex justify-content-center mb-5">
+                <CalculatorBorrowerDetails model="model" />
+            </div>
+            <ValidationSummary />
+            <div class="d-flex justify-content-center">
+                <div class="d-flex flex-column align-items-center gap-3">
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Success" Size="Size.Large">Calculate Quote</MudButton>
+                    <p class="text-muted small">This quote does not affect your credit score.</p>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    QuotationViewModel model = new QuotationViewModel();
+
+    private bool isSubmitted = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCalculatorDetails();
+    }
+
+    private async Task LoadCalculatorDetails()
+    {
+        // isLoading = true;
+        // StateHasChanged();
+
+        // try
+        // {
+        //     model = await _httpClient.GetFromJsonAsync<FinanceViewModel>("api/Quotation/GetMockQuote");
+        // }
+        // catch (Exception ex)
+        // {
+        //     Console.WriteLine($"Error fetching quotation: {ex.Message}");
+        // }
+        // finally
+        // {
+        //     isLoading = false;
+        //     StateHasChanged();
+        // }
+    }
+
+    private async Task Submit_CalculateQuotation(EditContext context)
+    {
+        var response = await _httpClient.PostAsJsonAsync("api/Quotation/CalculateQuote", model);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<FinanceViewModel>();
+
+            if (result != null)
+            {
+                // var financeId = result.Id.ToString();
+                var financeId = result.Id;
+
+                NavigateToQuotationComponent(financeId);
+            }
+        }
+        else
+        {
+            _snackBar.Add("Failed to calculate quote.", Severity.Error);
+            StateHasChanged();
+        }
+    }
+
+    // private void NavigateToQuotationComponent(string redirectUrl)
+    private void NavigateToQuotationComponent(Guid redirectUrl)
+    {
+        _navigation.NavigateTo($"quotation/{redirectUrl}");
+        // _navigation.NavigateTo($"quotation/{Guid.Parse(redirectUrl)}");
+    }
+}
