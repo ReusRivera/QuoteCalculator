@@ -19,6 +19,14 @@ namespace QuoteCalculator.Services.FinanceService
             _product = product;
         }
 
+        private IQueryable<FinanceModel> GetIQueryableFinance()
+        {
+            return _context.Finance
+                .Include(f => f.Quotation)
+                    .ThenInclude(q => q.Borrower)
+                .Include(f => f.Product);
+        }
+
         private async Task<FinanceModel> AddFinance(FinanceModel finance)
         {
             var result = _context.Finance.Add(finance);
@@ -110,7 +118,7 @@ namespace QuoteCalculator.Services.FinanceService
 
         public async Task<FinanceModel?> GetFinanceById(Guid? financeId)
         {
-            return await _context.Finance
+            return await GetIQueryableFinance()
                 .FirstOrDefaultAsync(f => f.Id == financeId);
         }
 

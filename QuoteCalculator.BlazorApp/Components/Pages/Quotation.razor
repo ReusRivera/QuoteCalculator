@@ -14,8 +14,8 @@
         <h3 class="text-center text-secondary mb-5">Your Quote</h3>
     </div>
 
-    @if (model == null || model.Quotation == null || model.Quotation.Borrower == null)
-    @* @if (isLoading) *@
+    @* @if (model == null || model.Quotation == null || model.Quotation.Borrower == null) *@
+    @if (isLoading)
     {
         <div class="d-flex justify-content-center">
             <MudProgressCircular Indeterminate="true" />
@@ -47,20 +47,25 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    FinanceViewModel? model = new FinanceViewModel();
-
     private bool isLoading;
 
-    protected override async Task OnInitializedAsync()
+    FinanceViewModel? model = new FinanceViewModel();
+
+    protected override void OnInitialized()
     {
-        await LoadQuotationDetails();
+        isLoading = true;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadQuotationDetails();
+        }
     }
 
     private async Task LoadQuotationDetails()
     {
-        isLoading = true;
-        // StateHasChanged();
-
         try
         {
             var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>($"api/Finance/GetFinance?financeId={Id}");
@@ -93,7 +98,7 @@
         finally
         {
             isLoading = false;
-            // StateHasChanged();
+            StateHasChanged();
         }
     }
 

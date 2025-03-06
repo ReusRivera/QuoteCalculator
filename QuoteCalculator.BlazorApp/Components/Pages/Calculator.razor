@@ -1,6 +1,6 @@
 ﻿@using QuoteCalculator.Domain.Models.ViewModels
 
-@page "/calculator"
+@page "/calculator/{Id:guid?}"
 
 @inject ISnackbar _snackBar
 @inject HttpClient _httpClient
@@ -24,13 +24,13 @@
                 <MudSlider T="decimal" Color="Color.Primary" Size="Size.Large" Min="100" Max="1000" ValueLabel="true" ValueLabelFormat="₱ 0.00" @bind-Value="@model.AmountRequired">How much do you need?</MudSlider>
 
                 @* <MudText Color="Color.Error" Style="font-size: 0.9rem;" Class="mt-1" Hidden="@(model.AmountRequired > 100 || !isSubmitted)">
-                    * Please select an amount.
+                * Please select an amount.
                 </MudText> *@
 
                 <MudSlider Color="Color.Primary" Size="Size.Large" Min="1" Max="60" ValueLabel="true" @bind-Value="@model.Term">Term</MudSlider>
 
                 @* <MudText Color="Color.Error" Style="font-size: 0.9rem;" Class="mt-1" Hidden="@(model.Term > 1 || !isSubmitted)">
-                    * Please select a term.
+                * Please select a term.
                 </MudText> *@
             </div>
 
@@ -49,33 +49,47 @@
 </div>
 
 @code {
-    QuotationViewModel model = new QuotationViewModel();
+    [Parameter]
+    public Guid? Id { get; set; }
 
     private bool isSubmitted = false;
 
-    protected override async Task OnInitializedAsync()
+    QuotationViewModel model = new QuotationViewModel();
+
+    protected override void OnInitialized()
     {
-        await LoadCalculatorDetails();
+        
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && Id.HasValue)
+        {
+            await LoadCalculatorDetails();
+        }
     }
 
     private async Task LoadCalculatorDetails()
     {
-        // isLoading = true;
-        // StateHasChanged();
+        try
+        {
+            // var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>("api/Quotation/GetMockQuote");
+            var response = await _httpClient.GetFromJsonAsync<QuotationViewModel>($"api/Quotation/GetQuote?quotationId={Id}");
 
-        // try
-        // {
-        //     model = await _httpClient.GetFromJsonAsync<FinanceViewModel>("api/Quotation/GetMockQuote");
-        // }
-        // catch (Exception ex)
-        // {
-        //     Console.WriteLine($"Error fetching quotation: {ex.Message}");
-        // }
-        // finally
-        // {
-        //     isLoading = false;
-        //     StateHasChanged();
-        // }
+            if (response != null)
+            {
+                model = response;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching quotation: {ex.Message}");
+        }
+        finally
+        {
+            // isLoading = false;
+            StateHasChanged();
+        }
     }
 
     private async Task Submit_CalculateQuotation(EditContext context)
@@ -101,10 +115,5 @@
         }
     }
 
-    // private void NavigateToQuotationComponent(string redirectUrl)
-    private void NavigateToQuotationComponent(Guid redirectUrl)
-    {
-        _navigation.NavigateTo($"quotation/{redirectUrl}");
-        // _navigation.NavigateTo($"quotation/{Guid.Parse(redirectUrl)}");
-    }
+    private void NavigateToQuotationComponent(Guid redirectUrl) => _navigation.NavigateTo($"quotation/{redirectUrl}");
 }

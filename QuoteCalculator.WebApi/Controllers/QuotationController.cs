@@ -23,6 +23,22 @@ namespace QuoteCalculator.WebApi.Controllers
             _finance = finance;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetQuote([FromQuery] Guid quotationId)
+        {
+            if (quotationId == Guid.Empty)
+                return BadRequest("Invalid quotation ID.");
+
+            var quotation = await _quotation.GetQuotationById(quotationId);
+
+            if (quotation == null)
+                return NotFound("Quotation record not found.");
+
+            var result = _mapper.Map<QuotationViewModel>(quotation);
+
+            return Ok(result);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateQuote([FromBody] QuotationDto model)
         {
