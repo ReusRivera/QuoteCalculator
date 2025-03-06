@@ -24,13 +24,13 @@
                 <MudSlider T="decimal" Color="Color.Primary" Size="Size.Large" Min="100" Max="1000" ValueLabel="true" ValueLabelFormat="₱ 0.00" @bind-Value="@model.AmountRequired">How much do you need?</MudSlider>
 
                 @* <MudText Color="Color.Error" Style="font-size: 0.9rem;" Class="mt-1" Hidden="@(model.AmountRequired > 100 || !isSubmitted)">
-                    * Please select an amount.
+                * Please select an amount.
                 </MudText> *@
 
                 <MudSlider Color="Color.Primary" Size="Size.Large" Min="1" Max="60" ValueLabel="true" @bind-Value="@model.Term">Term</MudSlider>
 
                 @* <MudText Color="Color.Error" Style="font-size: 0.9rem;" Class="mt-1" Hidden="@(model.Term > 1 || !isSubmitted)">
-                    * Please select a term.
+                * Please select a term.
                 </MudText> *@
             </div>
 
@@ -49,13 +49,20 @@
 </div>
 
 @code {
-    QuotationViewModel model = new QuotationViewModel();
-
     private bool isSubmitted = false;
 
-    protected override async Task OnInitializedAsync()
+    QuotationViewModel model = new QuotationViewModel();
+
+    protected override void OnInitialized()
     {
-        await LoadCalculatorDetails();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadCalculatorDetails();
+        }
     }
 
     private async Task LoadCalculatorDetails()

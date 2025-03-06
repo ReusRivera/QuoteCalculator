@@ -14,8 +14,8 @@
         <h3 class="text-center text-secondary mb-5">Your Quote</h3>
     </div>
 
-    @if (model == null || model.Quotation == null || model.Quotation.Borrower == null)
-    @* @if (isLoading) *@
+    @* @if (model == null || model.Quotation == null || model.Quotation.Borrower == null) *@
+    @if (isLoading)
     {
         <div class="d-flex justify-content-center">
             <MudProgressCircular Indeterminate="true" />
@@ -25,8 +25,8 @@
     {
         <EditForm FormName="Form_LoanApplication" Model="@model" OnValidSubmit="Submit_LoanApplication">
             <DataAnnotationsValidator />
-            <QuotationBorrowerDetails model="model" />
-            <QuotationFinanceDetails model="model" />
+            @* <QuotationBorrowerDetails model="model" />
+            <QuotationFinanceDetails model="model" /> *@
 
             <div class="d-flex justify-content-center mt-12">
                 <div class="d-flex flex-column align-items-center gap-4">
@@ -47,18 +47,26 @@
     [Parameter]
     public Guid Id { get; set; }
 
-    FinanceViewModel? model = new FinanceViewModel();
-
     private bool isLoading;
 
-    protected override async Task OnInitializedAsync()
+    FinanceViewModel? model = new FinanceViewModel();
+
+    protected override void OnInitialized()
     {
-        await LoadQuotationDetails();
+        isLoading = true;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadQuotationDetails();
+        }
     }
 
     private async Task LoadQuotationDetails()
     {
-        isLoading = true;
+        // isLoading = true;
         // StateHasChanged();
 
         try
@@ -93,7 +101,7 @@
         finally
         {
             isLoading = false;
-            // StateHasChanged();
+            StateHasChanged();
         }
     }
 
