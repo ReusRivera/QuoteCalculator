@@ -1,6 +1,6 @@
 ﻿@using QuoteCalculator.Domain.Models.ViewModels
 
-@page "/calculator"
+@page "/calculator/{Id:guid?}"
 
 @inject ISnackbar _snackBar
 @inject HttpClient _httpClient
@@ -49,17 +49,21 @@
 </div>
 
 @code {
+    [Parameter]
+    public Guid? Id { get; set; }
+
     private bool isSubmitted = false;
 
     QuotationViewModel model = new QuotationViewModel();
 
     protected override void OnInitialized()
     {
+        
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender && Id.HasValue)
         {
             await LoadCalculatorDetails();
         }
@@ -67,22 +71,25 @@
 
     private async Task LoadCalculatorDetails()
     {
-        // isLoading = true;
-        // StateHasChanged();
+        try
+        {
+            // var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>("api/Quotation/GetMockQuote");
+            var response = await _httpClient.GetFromJsonAsync<QuotationViewModel>($"api/Quotation/GetQuote?quotationId={Id}");
 
-        // try
-        // {
-        //     model = await _httpClient.GetFromJsonAsync<FinanceViewModel>("api/Quotation/GetMockQuote");
-        // }
-        // catch (Exception ex)
-        // {
-        //     Console.WriteLine($"Error fetching quotation: {ex.Message}");
-        // }
-        // finally
-        // {
-        //     isLoading = false;
-        //     StateHasChanged();
-        // }
+            if (response != null)
+            {
+                model = response;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching quotation: {ex.Message}");
+        }
+        finally
+        {
+            // isLoading = false;
+            StateHasChanged();
+        }
     }
 
     private async Task Submit_CalculateQuotation(EditContext context)
@@ -108,10 +115,5 @@
         }
     }
 
-    // private void NavigateToQuotationComponent(string redirectUrl)
-    private void NavigateToQuotationComponent(Guid redirectUrl)
-    {
-        _navigation.NavigateTo($"quotation/{redirectUrl}");
-        // _navigation.NavigateTo($"quotation/{Guid.Parse(redirectUrl)}");
-    }
+    private void NavigateToQuotationComponent(Guid redirectUrl) => _navigation.NavigateTo($"quotation/{redirectUrl}");
 }

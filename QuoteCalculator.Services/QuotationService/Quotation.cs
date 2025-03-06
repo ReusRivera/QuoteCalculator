@@ -19,6 +19,12 @@ namespace QuoteCalculator.Services.QuotationService
             _borrower = borrower;
         }
 
+        private IQueryable<QuotationModel> GetIQueryableQuotation()
+        {
+            return _context.Quotation
+                .Include(q => q.Borrower);
+        }
+
         private async Task<QuotationModel> AddQuotation(QuotationModel quotation)
         {
             var result = _context.Quotation.Add(quotation);
@@ -42,9 +48,15 @@ namespace QuoteCalculator.Services.QuotationService
             return await UpdateQuotation(quotation);
         }
 
+        public async Task<QuotationModel?> GetQuotationById(Guid? quotationId)
+        {
+            return await GetIQueryableQuotation()
+                .FirstOrDefaultAsync(q => q.Id == quotationId);
+        }
+
         private async Task<QuotationModel?> GetQuotationByDetails(QuotationModel quotation)
         {
-            return await _context.Quotation
+            return await GetIQueryableQuotation()
                 .FirstOrDefaultAsync(q =>
                     q.Id == quotation.Id ||
                     q.AmountRequired == quotation.AmountRequired &&

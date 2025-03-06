@@ -25,8 +25,8 @@
     {
         <EditForm FormName="Form_LoanApplication" Model="@model" OnValidSubmit="Submit_LoanApplication">
             <DataAnnotationsValidator />
-            @* <QuotationBorrowerDetails model="model" />
-            <QuotationFinanceDetails model="model" /> *@
+            <QuotationBorrowerDetails model="model" />
+            <QuotationFinanceDetails model="model" />
 
             <div class="d-flex justify-content-center mt-12">
                 <div class="d-flex flex-column align-items-center gap-4">
@@ -66,9 +66,6 @@
 
     private async Task LoadQuotationDetails()
     {
-        // isLoading = true;
-        // StateHasChanged();
-
         try
         {
             var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>($"api/Finance/GetFinance?financeId={Id}");
