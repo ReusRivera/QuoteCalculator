@@ -74,7 +74,8 @@
         try
         {
             // var response = await _httpClient.GetFromJsonAsync<FinanceViewModel>("api/Quotation/GetMockQuote");
-            var response = await _httpClient.GetFromJsonAsync<QuotationViewModel>($"api/Quotation/GetQuote?quotationId={Id}");
+            // var response = await _httpClient.GetFromJsonAsync<QuotationViewModel>($"api/Quotation/GetQuote?quotationId={Id}");
+            var response = await _httpClient.GetFromJsonAsync<QuotationViewModel>($"api/Quotation/GetQuoteByFinanceId?financeId={Id}");
 
             if (response != null)
             {
@@ -84,10 +85,10 @@
         catch (Exception ex)
         {
             Console.WriteLine($"Error fetching quotation: {ex.Message}");
+            _snackBar.Add("An error occured. Please try again later.", Severity.Error);
         }
         finally
         {
-            // isLoading = false;
             StateHasChanged();
         }
     }
@@ -102,18 +103,14 @@
 
             if (result != null)
             {
-                // var financeId = result.Id.ToString();
-                var financeId = result.Id;
-
-                NavigateToQuotationComponent(financeId);
+                NavigateToQuotation(result.Id);
             }
         }
         else
         {
             _snackBar.Add("Failed to calculate quote.", Severity.Error);
-            StateHasChanged();
         }
     }
 
-    private void NavigateToQuotationComponent(Guid redirectUrl) => _navigation.NavigateTo($"quotation/{redirectUrl}");
+    private void NavigateToQuotation(Guid redirectUrl) => _navigation.NavigateTo($"quotation/{redirectUrl}");
 }

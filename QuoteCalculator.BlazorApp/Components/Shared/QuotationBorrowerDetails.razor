@@ -1,12 +1,15 @@
 ﻿@using QuoteCalculator.Domain.Models.ViewModels
 
+@inject NavigationManager _navigation
+
 <div class="d-flex flex-column align-items-center gap-4 mt-12 mb-5">
     <MudGrid>
         <MudItem xs="11" sm="11" md="11">
             <h5>Your Information</h5>
         </MudItem>
         <MudItem xs="1" sm="1" md="1">
-            <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" OnClick="ToggleBorrowerFieldsDisabled">Edit</MudButton>
+            @* <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" OnClick="ToggleBorrowerFieldsDisabled">Edit</MudButton> *@
+            <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" OnClick="() => NavigateToCalculator(model.Id)">Edit</MudButton>
         </MudItem>
     </MudGrid>
 
@@ -16,7 +19,8 @@
             <MudTextField Value="@("First Name")" Disabled="true" />
         </MudItem>
         <MudItem xs="2" sm="2" md="2">
-            <MudTextField @bind-Value="model.Quotation.Borrower.FirstName" Disabled="IsBorrowerFieldsDisabled" />
+            @* <MudTextField @bind-Value="model.Quotation.Borrower.FirstName" Disabled="IsBorrowerFieldsDisabled" /> *@
+            <MudField Variant="Variant.Text">@model.Quotation.Borrower.FirstName</MudField>
         </MudItem>
     </MudGrid>
 
@@ -26,7 +30,8 @@
             <MudTextField Value="@("Last Name")" Disabled="true" />
         </MudItem>
         <MudItem xs="2" sm="2" md="2">
-            <MudTextField @bind-Value="model.Quotation.Borrower.LastName" Disabled="IsBorrowerFieldsDisabled" />
+            @* <MudTextField @bind-Value="model.Quotation.Borrower.LastName" Disabled="IsBorrowerFieldsDisabled" /> *@
+            <MudField Variant="Variant.Text">@model.Quotation.Borrower.LastName</MudField>
         </MudItem>
     </MudGrid>
 
@@ -36,7 +41,8 @@
             <MudTextField Value="@("Mobile")" Disabled="true" />
         </MudItem>
         <MudItem xs="2" sm="2" md="2">
-            <MudTextField @bind-Value="model.Quotation.Borrower.Mobile" Disabled="IsBorrowerFieldsDisabled" />
+            @* <MudTextField @bind-Value="model.Quotation.Borrower.Mobile" Disabled="IsBorrowerFieldsDisabled" /> *@
+            <MudField Variant="Variant.Text">@model.Quotation.Borrower.Mobile</MudField>
         </MudItem>
     </MudGrid>
 
@@ -46,7 +52,8 @@
             <MudTextField Value="@("Email")" Disabled="true" />
         </MudItem>
         <MudItem xs="2" sm="2" md="2">
-            <MudTextField Variant="Variant.Text" @bind-Value="model.Quotation.Borrower.Email" Disabled="IsBorrowerFieldsDisabled"></MudTextField>
+            @* <MudTextField Variant="Variant.Text" @bind-Value="model.Quotation.Borrower.Email" Disabled="IsBorrowerFieldsDisabled"></MudTextField> *@
+            <MudField Variant="Variant.Text">@model.Quotation.Borrower.Email</MudField>
         </MudItem>
     </MudGrid>
 </div>
@@ -55,10 +62,12 @@
     [Parameter]
     public FinanceViewModel model { get; set; } = new();
 
-    private bool IsBorrowerFieldsDisabled { get; set; } = true;
+    // private bool IsBorrowerFieldsDisabled { get; set; } = true;
 
-    private void ToggleBorrowerFieldsDisabled()
-    {
-        IsBorrowerFieldsDisabled = !IsBorrowerFieldsDisabled;
-    }
+    // private void ToggleBorrowerFieldsDisabled()
+    // {
+    //     IsBorrowerFieldsDisabled = !IsBorrowerFieldsDisabled;
+    // }
+
+    private void NavigateToCalculator(Guid redirectUrl) => _navigation.NavigateTo($"calculator/{redirectUrl}");
 }

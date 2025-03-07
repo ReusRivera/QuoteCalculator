@@ -31,6 +31,8 @@ namespace QuoteCalculator.WebApi.Controllers
 
             var result = _mapper.Map<FinanceViewModel>(finance);
 
+            _finance.UpdateFinanceComputation(result, finance);
+
             return Ok(result);
         }
     }

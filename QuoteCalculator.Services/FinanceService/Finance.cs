@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QuoteCalculator.Domain.Models;
+using QuoteCalculator.Domain.Models.ViewModels;
 using QuoteCalculator.Infrastructure.Data;
 using QuoteCalculator.Services.ProductService;
 
@@ -65,18 +66,28 @@ namespace QuoteCalculator.Services.FinanceService
             finance.Product = product;
         }
 
+        public async Task<FinanceModel?> GetFinanceById(Guid? financeId)
+        {
+            return await GetIQueryableFinance()
+                .FirstOrDefaultAsync(f => f.Id == financeId);
+        }
+
         public async Task<FinanceModel?> CreateFinance(FinanceModel finance)
         {
             await ValidateFinanceProduct(finance);
 
-            var quotation = finance.Quotation;
-            var product = finance.Product;
+            var amount = finance.Quotation.AmountRequired;
+            var term = finance.Quotation.Term;
+            var interest = finance.Product.Interest;
 
             using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
             {
-                finance.FinanceAmount = CalculateRepayment(quotation.AmountRequired, product.Interest, quotation.Term, finance.RepaymentSchedule);
+                decimal repayment = CalculateRepayment(amount, interest, term, finance.RepaymentSchedule);
+                decimal interestAmount = CalculateInterestAmount(amount, term, repayment);
+
+                finance.FinanceAmount = CalculateFinanceAmount(amount, interestAmount);
 
                 var financeResult = await AddFinance(finance);
 
@@ -106,6 +117,20 @@ namespace QuoteCalculator.Services.FinanceService
             return Math.Round(repayment, 2);
         }
 
+        public void UpdateFinanceComputation(FinanceViewModel viewModel, FinanceModel finance)
+        {
+            int loanTerms = finance.Quotation.Term;
+            decimal loanAmount = finance.Quotation.AmountRequired;
+            decimal repayment = finance.FinanceAmount;
+
+            decimal establishmentFee = CalculateEstablishmentFee();
+            decimal interestAmount = CalculateInterestAmount(loanAmount, loanTerms, repayment);
+
+            viewModel.EstablishmentFee = establishmentFee;
+            viewModel.Interest = interestAmount;
+            viewModel.TotalRepayment = CalculateAmountPayable(loanAmount, interestAmount, establishmentFee);
+        }
+
         private static int DetermineRepaymentSchedule(string repaymentSchedule)
         {
             return repaymentSchedule.ToLower() switch
@@ -116,10 +141,24 @@ namespace QuoteCalculator.Services.FinanceService
             };
         }
 
-        public async Task<FinanceModel?> GetFinanceById(Guid? financeId)
+        private static decimal CalculateFinanceAmount(decimal loanAmount, decimal interestAmount)
         {
-            return await GetIQueryableFinance()
-                .FirstOrDefaultAsync(f => f.Id == financeId);
+            return Math.Round(loanAmount + interestAmount, 2);
+        }
+
+        private static decimal CalculateEstablishmentFee()
+        {
+            return 300.00M; // Mock Establishment Fee for research and scientific purposes.
+        }
+
+        private static decimal CalculateInterestAmount(decimal loanAmount, int loanTerms, decimal repayment)
+        {
+            return Math.Round((repayment * loanTerms) - loanAmount, 2);
+        }
+
+        private static decimal CalculateAmountPayable(decimal loanAmount, decimal interestAmount, decimal establishmentFee)
+        {
+            return Math.Round(loanAmount + interestAmount + establishmentFee, 2);
         }
 
         // Mock FinanceModel for research and scientific purposes.
