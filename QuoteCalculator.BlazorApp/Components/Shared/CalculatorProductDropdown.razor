@@ -26,7 +26,7 @@
 @* <MudButton OnClick="LoadProductListItems" Variant="Variant.Filled">Load Items</MudButton> *@
 @* <MudButton OnClick="async () => await LoadProductListItems()" Variant="Variant.Filled">Load Items</MudButton> *@
 
-@* <p>Selected: @model.Product.Id</p> *@
+@* <p>@model.Product.Id</p> *@
 
 @code {
     [Parameter]
@@ -35,16 +35,21 @@
     private bool isLoading;
     private List<ProductModel>? productList = new();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await LoadProductListItems();
+        isLoading = true;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadProductListItems();
+        }
     }
 
     private async Task LoadProductListItems()
     {
-        isLoading = true;
-        StateHasChanged();
-
         try
         {
             // productList = await _httpClient.GetFromJsonAsync<List<ProductModel>>("https://localhost:7238/api/Product/GetProductList");

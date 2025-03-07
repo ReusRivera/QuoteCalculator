@@ -14,7 +14,6 @@
         <h3 class="text-center text-secondary mb-5">Your Quote</h3>
     </div>
 
-    @* @if (model == null || model.Quotation == null || model.Quotation.Borrower == null) *@
     @if (isLoading)
     {
         <div class="d-flex justify-content-center">
@@ -89,11 +88,9 @@
         catch (Exception ex)
         {
             Console.WriteLine($"Error fetching quotation: {ex.Message}");
-
             _snackBar.Add("Failed to fetch quotation.", Severity.Error);
-            NavigateToHome();
 
-            return;
+            NavigateToHome();
         }
         finally
         {
@@ -111,10 +108,7 @@
         catch (Exception ex)
         {
             Console.WriteLine($"Error editing quotation: {ex.Message}");
-
             _snackBar.Add("Failed to edit quotation.", Severity.Error);
-
-            // StateHasChanged();
         }
     }
 
@@ -123,7 +117,6 @@
         if (!context.Validate())
         {
             _snackBar.Add("Please correct validation errors.", Severity.Warning);
-            return;
         }
 
         try
@@ -144,14 +137,9 @@
             Console.WriteLine($"Error submitting loan application: {ex.Message}");
             _snackBar.Add("Unexpected error occurred.", Severity.Error);
         }
-
-        // success = true;
-        NavigateToSuccess();
     }
 
     private void NavigateToHome() => _navigation.NavigateTo("/");
-
-    private void NavigateToCalculator(string redirectUrl) => _navigation.NavigateTo($"calculator/{redirectUrl}");
 
     private void NavigateToSuccess() => _navigation.NavigateTo("/success");
 }

@@ -109,19 +109,5 @@ namespace QuoteCalculator.Services.QuotationService
                 return null;
             }
         }
-
-        //public async Task<QuotationModel?> VerifyQuotation(QuotationModel quotation)
-        //{
-        //    var quotationResult = await GetQuotationByDetails(quotation);
-
-        //    if (quotationResult == null)
-        //    {
-        //        _logger.LogWarning("UpdateQuotation: An error occurred while updating quotation. Either Quotation or Borrower doesn't exists!");
-
-        //        return null;
-        //    }
-
-        //    return quotationResult;
-        //}
     }
 }

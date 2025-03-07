@@ -39,6 +39,22 @@ namespace QuoteCalculator.WebApi.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetQuoteByFinanceId([FromQuery] Guid financeId)
+        {
+            if (financeId == Guid.Empty)
+                return BadRequest("Invalid quotation ID.");
+
+            var finance = await _finance.GetFinanceById(financeId);
+
+            if (finance == null || finance.Quotation == null)
+                return NotFound("Quotation record not found.");
+
+            var result = _mapper.Map<QuotationViewModel>(finance);
+
+            return Ok(result);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateQuote([FromBody] QuotationDto model)
         {
@@ -90,27 +106,6 @@ namespace QuoteCalculator.WebApi.Controllers
 
             return Ok(result);
         }
-
-        //[HttpPost]
-        //public async Task<IActionResult> EditQuote([FromBody] FinanceViewModel viewModel)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
-
-        //    var quotationMap = _mapper.Map<QuotationModel>(viewModel);
-
-        //    if (!_quotation.IsQuotationValid(quotationMap))
-        //        return BadRequest("Quotation details are invalid.");
-
-        //    var quotation = await _quotation.VerifyQuotation(quotationMap);
-
-        //    if (quotation == null)
-        //        return NotFound("Quotation record not found.");
-
-        //    var result = _mapper.Map<QuotationViewModel>(quotation);
-
-        //    return Ok(result);
-        //}
 
         #region Mock Data
         //[HttpGet]

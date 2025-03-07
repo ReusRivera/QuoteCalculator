@@ -13,7 +13,7 @@
         public string? Email { get; set; }
 
         public decimal TotalRepayment { get; set; }
-        public decimal EstablishmentFee { get; set; } = 300.00M;
+        public decimal EstablishmentFee { get; set; }
         public decimal Interest { get; set; }
     }
 }

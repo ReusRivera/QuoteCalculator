@@ -6,7 +6,7 @@
             <h5>Finance Details</h5>
         </MudItem>
         <MudItem xs="1" sm="1" md="1">
-            <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" OnClick="ToggleFinanceFieldsDisabled">Edit</MudButton>
+            @* <MudButton Variant="Variant.Text" Color="Color.Primary" Size="Size.Small" OnClick="ToggleFinanceFieldsDisabled">Edit</MudButton> *@
         </MudItem>
     </MudGrid>
 
@@ -16,7 +16,8 @@
             <MudTextField Value="@("Finance amount")" Disabled="true" />
         </MudItem>
         <MudItem xs="2" sm="2" md="2">
-            <MudTextField Variant="Variant.Text" @bind-Value="model.FinanceAmount" Disabled="IsFinanceFieldsDisabled" />
+            @* <MudTextField Variant="Variant.Text" @bind-Value="model.FinanceAmount" Disabled="IsFinanceFieldsDisabled" /> *@
+            <MudField Variant="Variant.Text">@model.FinanceAmount</MudField>
         </MudItem>
     </MudGrid>
 
@@ -26,7 +27,8 @@
             <MudTextField Value="@("Repayments from")" Disabled="true" />
         </MudItem>
         <MudItem xs="2" sm="2" md="2">
-            <MudTextField Variant="Variant.Text" @bind-Value="model.FinanceAmount" Disabled="IsFinanceFieldsDisabled" />
+            @* <MudTextField Variant="Variant.Text" @bind-Value="model.FinanceAmount" Disabled="IsFinanceFieldsDisabled" /> *@
+            <MudField Variant="Variant.Text">@model.FinanceAmount</MudField>
         </MudItem>
     </MudGrid>
 </div>
@@ -35,10 +37,10 @@
     [Parameter]
     public FinanceViewModel model { get; set; } = new();
 
-    private bool IsFinanceFieldsDisabled { get; set; } = true;
+    // private bool IsFinanceFieldsDisabled { get; set; } = true;
 
-    private void ToggleFinanceFieldsDisabled()
-    {
-        IsFinanceFieldsDisabled = !IsFinanceFieldsDisabled;
-    }
+    // private void ToggleFinanceFieldsDisabled()
+    // {
+    //     IsFinanceFieldsDisabled = !IsFinanceFieldsDisabled;
+    // }
 }
